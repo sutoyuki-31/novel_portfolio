@@ -1,0 +1,17 @@
+<table>
+    <thead>
+        <tr>
+<th>タイトル</th><th>あらすじ</th>
+</tr>
+</thead>
+<tbody>
+<% @novels.each do |novel| %>
+    <tr>
+      <td><%= novel.novel_number %></td>
+      <td><%= novel.title %></td>
+      <td><%= novel.synopsis %></td>
+      
+    </tr>
+  <% end %>
+  </tbody>
+</table>
