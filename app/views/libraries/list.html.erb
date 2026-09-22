@@ -1,0 +1,12 @@
+<%= render "users/form", user: @user %>
+
+
+<% @library.each do |library| %>
+    <tr>
+      
+      <td><%= library.novel_number %></td>
+      <td><%= library.title %></td>
+      <td><%= library.synopsis %></td>
+      
+    </tr>
+  <% end %>

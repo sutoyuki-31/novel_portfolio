@@ -6,6 +6,11 @@ end
 
 
 
+def myhome
+  @users = User.all
+end
+
+
 
 def create
   @user = current_user.users.build(user_parms)
@@ -15,4 +20,8 @@ def create
     render :new
   end
 end
+
+ def user_params
+    params.require(:user).permit(:name)
+  end
 end

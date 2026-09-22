@@ -1,15 +1,34 @@
 Rails.application.routes.draw do
   devise_for :users
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-  resources :users, only: [ :index ] do
+ # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+
+ #  ページ番号付きの専用URL
+ get "libraries/:id/page/:page", to: "libraries#show", as: "libraries_page"
+
+ #  通常のURL（1ページ目を表示するため、あるいはデフォルト用）
+
+ resources :libraries, only: [ :index, :show, :create, :new ] do
+    collection do
+      get "writing"
+      get "novel"
+      post "novel"
+       get "list"
+    end
   end
 
 
-   resources :novels, only: [ :index, :new, :create ] do
+
+ resources :users, only: [ :index ] do
+    collection do
+       get "myhome"
+    end
+  end
+
+
+  resources :novels, only: [ :index, :new, :create ] do
     collection do
       get "piece"
       get "writing"
-       get "myhome"
     end
   end
 

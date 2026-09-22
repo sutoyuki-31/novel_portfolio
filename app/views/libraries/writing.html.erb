@@ -1,6 +1,6 @@
 <%# 題名とあらすじを出力して編集ページに移行する%>
 
-<%=form_with  model: @library,  data: { turbo: false} do |form| %>
+<%=form_with  model: @library, url: libraries_path, data: { turbo: false} do |form| %>
 <%= form.label :title, "題名"%>
 <%= form.text_field :title%>
 
