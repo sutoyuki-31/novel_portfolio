@@ -17,7 +17,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_20_081055) do
     t.text "synopsis"
     t.string "subtitle"
     t.text "story"
-    t.integer "novel_number"
+    t.integer "status", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_libraries_on_user_id"

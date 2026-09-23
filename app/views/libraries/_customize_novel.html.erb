@@ -1,0 +1,9 @@
+<%= form_with model: @library, data: { turbo: false } do |form| %>
+<%= form.label :title, "題名"%>
+<%= form.text_field :title%>
+
+<%= form.label :synopsis, "あらすじ"%>
+<%= form.text_field :synopsis%>
+
+<%= form.submit %>
+<% end %>

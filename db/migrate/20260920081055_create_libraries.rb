@@ -6,9 +6,9 @@ class CreateLibraries < ActiveRecord::Migration[7.2]
     t.text :synopsis
     t.string :subtitle
     t.text :story
-    t.integer :novel_number
+    t.integer :status, default: 0, null: false
 
-      t.timestamps
+    t.timestamps
     end
   end
 end

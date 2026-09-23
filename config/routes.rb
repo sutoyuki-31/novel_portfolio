@@ -3,16 +3,19 @@ Rails.application.routes.draw do
  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
  #  ページ番号付きの専用URL
- get "libraries/:id/page/:page", to: "libraries#show", as: "libraries_page"
+ get "libraries/:id/page/:page", to: "libraries#list", as: "libraries_page"
 
  #  通常のURL（1ページ目を表示するため、あるいはデフォルト用）
 
- resources :libraries, only: [ :index, :show, :create, :new ] do
+ resources :libraries, only: [ :index, :show, :create, :new, :edit, :update, :destroy ] do
     collection do
-      get "writing"
+       get "list"
+        get "writing"
+    end
+
+    member do
       get "novel"
       post "novel"
-       get "list"
     end
   end
 

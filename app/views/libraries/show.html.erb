@@ -1,0 +1,14 @@
+ 
+
+      <%=form_with  model: @library, url: libraries_path, data: { turbo: false} do |form| %>
+<%= form.label :title, "題名"%>
+<%= form.text_field :title%>
+
+<%= form.label :synopsis, "あらすじ"%>
+<%= form.text_field :synopsis%>
+
+<%= form.label :status, "公開設定" %>
+      <%= form.select :status, Library.statuses.keys.map { |k| [I18n.t("enums.library.status.#{k}"),k]}%>
+
+<%= form.submit %>
+<% end %>

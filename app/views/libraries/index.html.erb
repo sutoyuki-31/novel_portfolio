@@ -10,7 +10,9 @@
      
       <td><%= library.title %></td>
       <td><%= library.synopsis %></td>
+     <td> <%= link_to "書く", novel_library_path(library) %></td>
       
+ <td> <%= button_to "削除する", library_path(library), method: :delete, data: { confirm: "本当に削除しますか？" } %></td>
     </tr>
   <% end %>
   </tbody>
