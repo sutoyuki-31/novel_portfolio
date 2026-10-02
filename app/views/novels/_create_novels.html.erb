@@ -1,0 +1,35 @@
+<%# エラーメッセージの表示 %>
+<% if @novel.errors.any? %>
+  <div id="error_explanation" class="error-container" role="alert">
+    <h2><%= t('errors.template.header', count: @novel.errors.count, model: @novel.model_name.human) %></h2>
+    <ul>
+      <% @novel.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%# フォーム本体 %>
+<%= form_with model: [@library, @novel], data: { turbo: false }, class: "novel-form" do |form| %>
+  
+  <div class="form-group">
+    <%= form.label :subtitle, "サブタイトル" %>
+    <%= form.text_field :subtitle %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :story, "ストーリー" %>
+    <%= form.text_area :story, rows: 5 %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :status, "公開ステータス" %>
+    <%= form.select :status, Novel.statuses.keys.map { |k| [t("enums.novel.status.#{k}", default: k.humanize), k] } %>
+  </div>
+
+  <div class="form-actions">
+    <%= form.submit "保存する" %>
+  </div>
+
+<% end %>

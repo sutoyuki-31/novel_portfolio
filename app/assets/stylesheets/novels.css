@@ -1,0 +1,158 @@
+/* novels/_create_novels */
+.novel-form {
+  max-width: 100%; /* 横幅の制限を解除 */
+  margin: 0;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+/* 各入力項ームのグループ共通 */
+.form-group {
+  margin-bottom: 2rem;
+}
+
+/* ラベルのスタイル共通（細字にして主張を抑える） */
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 400;
+  color: #777777; /* 薄いグレー */
+  font-size: 0.85rem;
+}
+
+/* 入力フィールド共通（下線のみの超シンプル設計） */
+.form-group input[type="text"],
+.form-group select {
+  width: 100%;
+  padding: 0.5rem 0;
+  font-size: 0.95rem;
+  color: #333333;
+  background-color: transparent; /* 背景色はなし */
+  border: none;
+  border-bottom: 1px solid #dddddd; /* 目立たない薄い下線のみ */
+  border-radius: 0;
+  box-sizing: border-box;
+  outline: none;
+  -webkit-appearance: none; /* ブラウザ固有の装飾をリセット */
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* フォーカス時（色の変化を最小限に） */
+.form-group input[type="text"]:focus,
+.form-group select:focus {
+  border-color: #888888; /* わずかに線が濃くなるだけ */
+}
+
+
+/* ==========================================
+   あらすじ・その他用の一般的なテキストエリア
+   ========================================== */
+.form-group textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 0.5rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #333333;
+  background-color: transparent;
+  border: 1px solid #eeeeee; /* ごく薄い4辺の枠線 */
+  border-radius: 0;
+  box-sizing: border-box;
+  outline: none;
+  resize: vertical;
+}
+
+.form-group textarea:focus {
+  border-color: #888888;
+}
+
+/* ==========================================
+   小説本文 入力専用エリア（執筆集中モード）
+   ※親の .form-group に「.form-group-story」を付与してください
+   ========================================== */
+/* ストーリー入力部分のグループ（画面端まで広げる） */
+.novel-form .form-group-story {
+  margin-left: -2rem;  /* フォームの左右余白（padding）を打ち消す */
+  margin-right: -2rem; 
+  margin-bottom: 2rem;
+}
+
+/* ストーリーのラベル（主張を抑え、左端に少し余白を持たせる） */
+.novel-form .form-group-story label {
+  padding-left: 2rem;
+  color: #999999;
+  font-size: 0.8rem;
+}
+
+/* ストーリーのテキストエリア（枠線・背景を完全排除し、一般的な設定を上書き） */
+.novel-form .form-group-story textarea {
+  width: 100%;
+  min-height: 60vh; /* 画面縦幅の約60%を確保して書きやすく */
+  padding: 1.5rem 2rem; /* 上下にゆとりを持たせ、左右は画面端から少し離す */
+  font-size: 1.05rem; /* 小説を書きやすい少し大きめのサイズ */
+  line-height: 1.8; /* 行間を広げて視認性の圧迫感を減らす */
+  border: none; /* 4辺の枠線を完全に消去 */
+  outline: none; /* 選択時の青い枠線も非表示 */
+  resize: none; /* 右下のサイズ調整ツマミも非表示 */
+}
+
+/* フォーカス時も一切変化させない */
+.novel-form .form-group-story textarea:focus {
+  border: none;
+  background-color: transparent;
+}
+
+/* ボタン・アクションエリア*/
+.form-actions {
+  margin-top: 2rem;
+  text-align: right;
+}
+
+/* 保存ボタン（背景色をなくし、テキストリンクのような佇まいに） */
+.form-actions input[type="submit"] {
+  background: none;
+  color: #555555;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 400;
+  cursor: pointer;
+  text-decoration: underline; /* 押せることを示す最低限の下線 */
+}
+
+/* ボタンホバー時 */
+.form-actions input[type="submit"]:hover {
+  color: #000000;
+}
+
+/* ==========================================
+   エラーメッセージ（警告色を排除したミニマル表現）
+   ========================================== */
+.error-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 0 0 1rem 0;
+  border-bottom: 1px dashed #cccccc; /* 赤ではなく、グレーの破線 */
+}
+
+/* エラーのタイトル */
+.error-container h2 {
+  margin: 0 0 0.5rem 0;
+  color: #333333;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* エラーの箇条書き */
+.error-container ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: #666666;
+  font-size: 0.85rem;
+  list-style-type: square; /* プレーンな目印 */
+}
+
+.error-container li {
+  margin-bottom: 0.25rem;
+}

@@ -1,0 +1,561 @@
+/*libraries/show*/
+/* コンテナ */
+
+/* タイトルブロック（新規追加） */
+.lib-show-title-wrapper {
+  margin-bottom: 25px;
+}
+
+/* 独立したタイトル専用クラス（新規追加） */
+.lib-show-title {
+  display: inline-block;
+  margin: 0;
+  color: #333333;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.lib-show-container {
+  margin: 80px auto 30px 20px;
+}
+
+/* ページ内見出し */
+.lib-show-heading {
+  margin: 30px 0 10px;
+  color: #333333;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+/* ライブラリ情報テーブル */
+.lib-show-table {
+  width: 100%;
+  margin-bottom: 25px;
+  border-collapse: collapse;
+}
+
+.lib-show-table th,
+.lib-show-table td {
+  padding: 12px 0;
+  text-align: left;
+  vertical-align: top;
+}
+
+.lib-show-table th {
+  color: #777777;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.lib-show-table td {
+  color: #333333;
+}
+
+.lib-show-synopsis {
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+
+/* 話数一覧リスト */
+.lib-show-list {
+  margin: 0 0 20px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lib-show-item {
+  display: flex;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.lib-show-empty {
+  padding: 10px 0;
+  color: #777777;
+  font-size: 0.9rem;
+}
+
+/* メインリンク */
+.lib-show-link-main {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.lib-show-link-main:hover {
+  text-decoration: underline;
+}
+
+/* 操作系リンク（編集・削除・新規作成） */
+.lib-show-actions {
+  margin-top: 20px;
+}
+
+.lib-show-link-action {
+  margin-left: 15px;
+  vertical-align: middle;
+}
+
+/* あらすじブロック（新規追加） */
+.lib-show-synopsis-wrapper .lib-show-heading {
+  margin-top: 0;
+}
+
+.lib-show-link-danger,
+.lib-show-link-primary {
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+.lib-show-link-action:hover,
+.lib-show-link-danger:hover,
+.lib-show-link-primary:hover {
+  text-decoration: underline;
+}
+
+.lib-show-link-action {
+  color: #555555;
+}
+
+.lib-show-link-danger {
+  margin-left: 15px;
+  color: #cc0000;
+}
+
+.lib-show-link-primary {
+  color: #0066cc;
+  font-weight: 500;
+}
+
+@media screen and (max-width: 767px) {
+  /* コンテナの左余白をスマホ用に最適化（80pxだと広すぎるため縮小） */
+  .lib-show-container {
+    margin: 20px 15px 30px 15px;
+  }
+
+  /* タイトルと編集リンクのブロックを縦並び（Flexbox）に変更 */
+  .lib-show-title-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* タイトルと編集ボタンの間の隙間 */
+    margin-bottom: 20px;
+  }
+
+  /* インラインブロックを解除して横幅いっぱいに */
+  .lib-show-title {
+    display: block;
+    font-size: 1.125rem; /* スマホ用に文字サイズを少し小さく */
+  }
+
+  /* 編集リンクの余白と位置をリセット */
+  .lib-show-link-action {
+    margin-left: 0;
+    vertical-align: baseline;
+  }
+
+  /* 話数一覧の「タイトル」と「削除」の間隔を少し広げてタップしやすく */
+  .lib-show-item {
+    justify-content: space-between;
+    padding: 8px 0; /* タップ領域確保のために上下パディングを拡大 */
+  }
+
+  .lib-show-link-danger {
+    margin-left: 10px;
+    flex-shrink: 0; /* 削除テキストが折り返されないように固定 */
+  }
+}
+
+
+/* libraies/_start_novel */
+.library-form-wrapper {
+  max-width: 600px;
+  margin: 120px auto 40px auto; 
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* エラーメッセージエリア */
+#library-error-box {
+  margin-bottom: 25px;
+  padding: 20px;
+  background-color: #fff5f5;
+  border-left: 4px solid #e53e3e;
+  border-radius: 4px;
+}
+
+#library-error-box h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #c53030;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+#library-error-box ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #9b2c2c;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* 各フォームグループ（縦の並び） */
+.library-field {
+  margin-bottom: 20px;
+}
+
+/* ラベル */
+.library-field label {
+  display: block;
+  margin-bottom: 8px;
+  color: #333333;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* 入力フィールド共通（テキスト、エリア、セレクト） */
+.library-field input[type="text"],
+.library-field textarea,
+.library-field select {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 15px;
+  border: 1px solid #d2d6dc;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #2d3748;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* 複数行テキストエリアの高さ調整 */
+.library-field textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* 入力フィールドのフォーカス時 */
+.library-field input[type="text"]:focus,
+.library-field textarea:focus,
+.library-field select:focus {
+  outline: none;
+  border-color: #3182ce;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+}
+
+/* プレースホルダーの文字色 */
+.library-field input::placeholder,
+.library-field textarea::placeholder {
+  color: #a0aec0;
+  font-size: 13px;
+}
+
+/* 送信ボタン */
+.library-submit-action {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin-top: 30px;
+  background-color: #3182ce;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+/* 送信ボタンのホバー・アクティブ時 */
+.library-submit-action:hover {
+  background-color: #2b6cb0;
+}
+
+.library-submit-action:active {
+  transform: scale(0.98);
+}
+
+@media screen and (max-width: 480px) {
+  .library-form-wrapper {
+    /* 
+      上のマージンを「0」にして画面最上部まで引き上げ、
+      外側の左右余白も「10px」に縮小して画面を最大限広く使います。
+    */
+    margin: 0 auto 20px auto; 
+    padding: 12px 12px; /* 内側の余白も極力小さく */
+    border-radius: 4px;
+    box-shadow: none; /* スマホでは枠線をシンプルにするため影を非表示に */
+  }
+
+  /* エラーボックスもコンパクトに */
+  #library-error-box {
+    padding: 10px;
+    margin-bottom: 12px;
+  }
+
+  #library-error-box h2 {
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
+  #library-error-box ul {
+    font-size: 12px;
+  }
+
+  /* 各入力項目の上下の間隔を「16px」から「10px」に詰めて高さを節約 */
+  .library-field {
+    margin-bottom: 10px;
+  }
+
+  /* ラベルの文字と下の隙間を最小限に */
+  .library-field label {
+    font-size: 12px;
+    margin-bottom: 3px;
+  }
+
+  /* 入力欄自体の高さ（上下パディング）を少しタイトに調整 */
+  .library-field input[type="text"],
+  .library-field textarea,
+  .library-field select {
+    padding: 8px 10px; 
+    font-size: 16px; /* iOSの自動ズーム防止のため16pxは維持 */
+  }
+
+  /* あらすじの入力欄をスマホ用に少し浅くして縦幅を節約 */
+  .library-field textarea {
+    min-height: 80px; 
+  }
+
+  /* 送信ボタンの余白と上部のマージンを詰める */
+  .library-submit-action {
+    padding: 12px;
+    margin-top: 15px;
+    font-size: 16px;
+  }
+}
+
+/*libralies/list */
+/* --- テーブル全体の枠線・余白調整 --- */
+
+.list-container {
+  margin-top: 80px;  /* ヘッダーの高さが60pxなら80px〜100pxほどあけると綺麗です */
+  padding: 0 20px;   /* 画面端との微調整用（必要に応じて） */
+}
+
+/* タイトルも少し整える場合 */
+.list-title {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.list-table {
+  width: 73%;                       /* 横幅を画面いっぱいに広げる */
+  border-collapse: collapse;         /* 隙間をなくして綺麗に線をつなげる */
+}
+
+/* ヘッダー（thead）の見出しデザイン */
+.list-table th {
+  text-align: left;                  /* テキストを左寄せに */
+  padding: 12px 16px;                /* summaryの余白（12px 16px）と美しく揃える */
+  font-size: 0.9em;
+  color: #666666;                    /* 少し薄めの色で上品に */
+  border-bottom: 2px solid #50a13cb9;/* アクセントカラーの線を引く */
+}
+
+.list-table td {
+  padding: 0;                        /* tdの余白を0にして、details側の余白に一任する */
+  border-bottom: 1px solid #e0e0e0;  /* 仕切り線を少し細くして上品に */
+}
+
+/* 最後の行の仕切り線を消してスッキリさせる */
+.list-table tr:last-child td {
+  border-bottom: none;
+}
+
+
+/* --- detailsタグ（アコーディオン全体） --- */
+.list-details {
+  display: block;
+  width: 100%;
+  background-color: #ffffff;         /* 基本の背景は白（カード風） */
+  border-radius: 4px;                /* 角を丸める */
+  overflow: hidden;                  /* 子要素（summary）のホバー背景が角丸からはみ出るのを防ぐ */
+  margin: 6px 0;                     /* 閉じている時も上下に僅かな余白を作り、行同士の引っ付きを防ぐ */
+  transition: box-shadow 0.2s ease, margin 0.2s ease;
+}
+
+/* 【開いている時】全体を軽い影で包んで強調 */
+.list-details[open] {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* 影を少し滑らかに広げてリッチに */
+  margin: 12px 0;                    /* 開いたデータの上下にしっかりと隙間を作り、独立させる */
+}
+
+
+/* --- summaryタグ（見出し・クリックエリア） --- */
+.list-summary {
+  display: flex;                     /* 横並びにして、アイコンを右端に寄せる */
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 14px 16px;                /* 上下を少し広げて、よりクリックしやすく */
+  font-weight: bold;
+  outline: none;
+  list-style: none;                  /* 標準の矢印を非表示（モダンブラウザ用） */
+}
+
+/* Safari用のアローアイコン非表示設定 */
+.list-summary::-webkit-details-marker {
+  display: none;
+}
+
+/* マウスホバー時、および【開いている時】の背景色を薄いグレーにする */
+.list-summary:hover,
+.list-details[open] .list-summary {
+  background-color: #f9f9f9;         /* ほんの少しだけ明るくして、文字の視認性をキープ */
+}
+
+/* キーボード操作（Tabキー）時のアクセシビリティ対応 */
+.list-summary:focus-visible {
+  outline: 2px solid #50a13cb9;      /* アクセントカラーの枠線を表示 */
+  outline-offset: -2px;
+}
+
+
+/* --- 右側の独自矢印アイコン（CSSで作成する矢印） --- */
+.list-summary::after {
+  content: "";                       /* 文字ではなくCSSで描画するため空にする */
+  display: inline-block;             /* transformを効かせるために必要 */
+  width: 8px;                        /* 矢印の幅 */
+  height: 8px;                       /* 矢印の高さ */
+  border-bottom: 2px solid #666666;  /* 矢印の線（下） */
+  border-right: 2px solid #666666;   /* 矢印の線（右） */
+  transform: rotate(45deg);          /* 45度回転させて下向き（＞を傾けた状態）にする */
+  transform-origin: center center;   /* 【重要】中央を軸に回転させる */
+  transition: transform 0.2s ease;   /* 回転時のアニメーション */
+  margin-right: 4px;                 /* 右側の余白調整 */
+  flex-shrink: 0;                    /* 💡 改善: タイトルが長くなっても矢印が潰れないように固定 */
+}
+
+/* 【開いている時】下向き（45deg）から上向き（-135deg）に綺麗に180度回転させる */
+.list-details[open] .list-summary::after {
+  transform: rotate(-135deg);
+}
+
+
+/* --- list-content（広がる中身のボックス） --- */
+.list-content {
+  padding: 16px;                     /* 上下の余白を少し広げて、中身が見やすくなるよう調整 */
+  background-color: #fafafa;
+  border-left: 4px solid #50a13cb9;  /* 変更: 3pxから4pxにして、アクセントの存在感を調整 */
+}
+
+.list-content p.description {
+  margin: 0 0 12px 0;
+  line-height: 1.6;                  /* ほんの少し行間を広げて視認性アップ */
+  color: #333;
+  white-space: pre-wrap;             /* 💡 改善: 改行データがある場合、CSS側でも自動改行できるように保険 */
+  overflow-wrap: break-word;         /* 💡 改善: 英語の長文URLなどが突き抜けて画面崩れするのを防ぐ */
+}
+
+/* リスト・ボタン装飾 */
+.info-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px 0;
+  font-size: 0.9em;
+  color: #666;
+}
+
+.info-list li {
+  margin-bottom: 6px;                /* 行間の余白を微増 */
+}
+
+/* 💡 改善: 区切り線（ | ）のスタイル調整 */
+.list-divider {
+  color: #e0e0e0;
+  user-select: none;                 /* テキスト選択時に巻き込まれないようにする */
+}
+
+/* リンクとボタンを綺麗に横並びにする設定 */
+.list-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;                         /* 💡 改善: ボタン同士の間隔を少し広げて誤タップ防止 */
+  margin-top: 16px;
+}
+
+.inline-form {
+  display: inline-flex;              /* 💡 改善: flexにすることでボタンの縦位置をリンクと完全に揃える */
+}
+
+.btn-list {
+  color: #007bff;
+  text-decoration: none;
+  font-size: 0.9em;
+  font-weight: bold;
+  background: none;                  /* ボタンの背景リセット */
+  border: none;                      /* ボタンの枠線リセット */
+  padding: 0;                        /* 余白リセット */
+  font: inherit;                     /* フォント引き継ぎ */
+  cursor: pointer;
+  transition: color 0.15s ease;      /* 💡 改善: ホバー時の色の変化を滑らかに */
+}
+
+.btn-list:hover {
+  text-decoration: underline;
+  color: #0056b3;                    /* 💡 改善: ホバー時に少し暗くして「押せる感」を出す */
+}
+
+/* 削除用ボタンのみ赤色にする指定 */
+.btn-danger-list {
+  color: #dc3545;
+}
+
+.btn-danger-list:hover {
+  color: #bd2130;                    /* 💡 改善: 削除ホバー時の色 */
+}
+/* --- スマートフォン向けのスタイル（画面幅768px以下） --- */
+@media screen and (max-width: 768px) {
+  
+  /* 1. テーブルの横幅を画面いっぱいに広げる */
+  .list-table {
+    width: 100%; 
+  }
+
+  /* 2. ヘッダーがある場合の上の余白をスマホ用に微調整（必要に応じて数値を変更してください） */
+  .list-container {
+    margin-top: 60px; /* スマホのヘッダーはPCより低くなることが多いため */
+    padding: 0 12px;  /* 左右に程よい余白を作る */
+  }
+
+  /* 3. タップ領域（summary）を広げて押しやすくする */
+  .list-summary {
+    padding: 16px 12px; /* 上下を少し広げ、左右をタイトにして文字数を確保 */
+    font-size: 0.95em;  /* 文字サイズを微調整 */
+  }
+
+  /* 4. アコーディオンの中身の調整 */
+  .list-content {
+    padding: 14px 12px; /* 余白を少し狭めて、画面を有効活用 */
+  }
+
+  .list-content p.description {
+    font-size: 0.9em;   /* 説明文を少し小さくして読みやすく */
+    line-height: 1.5;
+  }
+
+  /* 5. ボタンエリアの調整（誤タップ防止） */
+  .list-box {
+    gap: 16px;          /* ボタン同士の間隔を広げて押し間違いを防ぐ */
+    margin-top: 20px;   /* 上の要素との間隔をしっかりあける */
+  }
+
+  .btn-list {
+    font-size: 0.95em;  /* リンクの文字を少し大きくしてタップしやすく */
+    padding: 8px 0;     /* 見えないタップ判定を上下に広げる */
+  }
+}

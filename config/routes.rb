@@ -1,39 +1,26 @@
 Rails.application.routes.draw do
   devise_for :users
- # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+# Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
- #  ページ番号付きの専用URL
- get "libraries/:id/page/:page", to: "libraries#list", as: "libraries_page"
+#  ページ番号付きの専用URL
+# get "libraries/:id/page/:page", to: "libraries#list", as: "libraries_page", constraints: { id: /\d+/, page: /\d+/ }
 
- #  通常のURL（1ページ目を表示するため、あるいはデフォルト用）
+#  通常のURL（1ページ目を表示するため、あるいはデフォルト用）
 
- resources :libraries, only: [ :index, :show, :create, :new, :edit, :update, :destroy ] do
+resources :libraries do
     collection do
-       get "list"
-        get "writing"
+      get "list"
     end
+   resources :novels
+end
 
-    member do
-      get "novel"
-      post "novel"
+ resources :users, only: [ :index, :show, :create, :new, :edit, :update, :destroy ] do
+    collection do
+      get "myhome"
     end
   end
 
 
-
- resources :users, only: [ :index ] do
-    collection do
-       get "myhome"
-    end
-  end
-
-
-  resources :novels, only: [ :index, :new, :create ] do
-    collection do
-      get "piece"
-      get "writing"
-    end
-  end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.

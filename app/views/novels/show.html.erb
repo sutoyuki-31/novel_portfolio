@@ -1,0 +1,38 @@
+
+<h1><%= @library.title %></h1>
+<h2><%= @novel.subtitle %></h2>
+
+
+
+<hr>
+
+<!-- ページ移動ナビゲーション -->
+<div class="page-navigation" style="display: flex; justify-content: space-between;">
+  
+  <div class="prev-page">
+    <% if @previous_novel.present? %>
+      <%= link_to "← 前のページへ", [@library, @previous_novel] %>
+    <% else %>
+      <span style="color: #ccc;">最初のページです</span>
+    <% end %>
+  </div>
+
+  <div class="back-to-library">
+    <%= link_to "目次（タイトル詳細）へ戻る", library_novels_path(@library) %>
+  </div>
+
+  <div class="next-page">
+    <% if @next_novel.present? %>
+      <%= link_to "次のページへ →", [@library, @next_novel] %>
+    <% else %>
+      <span style="color: #ccc;">最後のページです</span>
+    <% end %>
+  </div>
+
+</div>
+
+  
+  <tr class="novel-preview-row">
+  
+  <td class="novel-story-cell"><%= simple_format(@novel.story) %></td>
+</tr>

@@ -1,6 +1,7 @@
 class User < ApplicationRecord
-has_many :novels
-has_many :libraries
+has_many :novels, dependent: :destroy
+
+has_many :libraries, dependent: :destroy
 
 
   # Include default devise modules. Others available are:

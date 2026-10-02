@@ -1,14 +1,40 @@
- 
+<!-- libraries/show -->
+<div class="lib-show-container">
 
-      <%=form_with  model: @library, url: libraries_path, data: { turbo: false} do |form| %>
-<%= form.label :title, "題名"%>
-<%= form.text_field :title%>
+  <!-- タイトルと編集リンクのブロック -->
+  <div class="lib-show-title-wrapper">
+    <h1 class="lib-show-title">
+      <%= @library.title %>
+    </h1>
+    <%= link_to "編集", edit_library_path(@library), class: "lib-show-link-action" %>
+  </div>
 
-<%= form.label :synopsis, "あらすじ"%>
-<%= form.text_field :synopsis%>
+  <!-- あらすじのブロック -->
+  <div class="lib-show-synopsis-wrapper">
+    <h2 class="lib-show-heading">あらすじ</h2>
+    <%= simple_format(h(@library.synopsis), class: "lib-show-synopsis") %>
+  </div>
 
-<%= form.label :status, "公開設定" %>
-      <%= form.select :status, Library.statuses.keys.map { |k| [I18n.t("enums.library.status.#{k}"),k]}%>
+  <!-- 話数の一覧ブロック -->
+  <h2 class="lib-show-heading">話数の一覧</h2>
 
-<%= form.submit %>
-<% end %>
+  <% if @novels.any? %>
+    <ul class="lib-show-list">
+      <% @novels.each do |novel| %>
+        <li class="lib-show-item">
+          <%= link_to novel.subtitle, edit_library_novel_path(@library, novel), class: "lib-show-link-main" %>
+          <%= link_to "削除", library_novel_path(@library, novel), 
+                      data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" }, 
+                      class: "lib-show-link-danger" %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="lib-show-empty">編集できる小説がありません。</p>
+  <% end %>
+
+  <div class="lib-show-actions">
+    <%= link_to "新規作成", new_library_novel_path(@library), class: "lib-show-link-primary" %>
+  </div>
+
+</div>

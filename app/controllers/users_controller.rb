@@ -3,9 +3,6 @@ def index
 @users = User.all
 end
 
-
-
-
 def myhome
   @users = User.all
 end
@@ -21,7 +18,9 @@ def create
   end
 end
 
- def user_params
+
+private
+  def user_params
     params.require(:user).permit(:name)
   end
 end

@@ -1,12 +1,54 @@
-<%= render "users/form", user: @user %>
+<div class="list-container">
+  <div class="list-title">自分が作った作品一覧</div>
 
-
-<% @library.each do |library| %>
+<table class="list-table">
+  <thead>
     <tr>
-      
-      <td><%= library.novel_number %></td>
-      <td><%= library.title %></td>
-      <td><%= library.synopsis %></td>
-      
+      <th>作品名</th>
     </tr>
-  <% end %>
+  </thead>
+  <tbody>
+    <% @libraries.each do |library| %>
+      <tr>
+        <td>
+          <!-- アコーディオン全体 -->
+          <details class="list-details">
+            <!-- クリックエリア（見出しと矢印アイコン） -->
+            <summary class="list-summary">
+              <%= library.title %>
+            </summary>
+            
+            <!-- 広がる中身のボックス -->
+            <div class="list-content">
+              <% if library.respond_to?(:description) && library.description.present? %>
+                <!-- 1. 改行をブラウザ上でも反映させる -->
+                <p class="description"><%= safe_join(library.description.split("\n"), tag.br) %></p>
+              <% end %>
+
+              <ul class="info-list">
+                <!-- 2. 日本の時間帯（JST）を考慮したフォーマット -->
+                <li>作成日: <%= l(library.created_at, format: :long) %></li>
+              </ul>
+
+              <div class="list-box">
+                <%= link_to "詳細を見る", library_path(library), class: "btn-list" %>
+                <span> | </span>
+                <!-- 3. Turboの仕様に合わせたデータ属性に変更 -->
+                <%= button_to "削除する", library_path(library), 
+                              method: :delete, 
+                              class: "btn-list btn-danger-list", 
+                              form_class: "inline-form",
+                              data: { turbo_confirm: "本当に削除しますか？" } %>
+              </div>
+            </div>
+          </details>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to "＋", new_library_path, class: "btn-add" %>
+</div>
+<%= render "users/myhome-tag", user: @user %>
+

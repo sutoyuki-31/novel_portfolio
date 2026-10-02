@@ -1,0 +1,41 @@
+<div class="library-form-wrapper"> <%# 変更 %>
+  <% if @library.errors.any? %>
+    <div id="library-error-box"> <%# 変更 %>
+      <h2><%= @library.errors.count %>件のエラーが発生しました:</h2>
+      <ul>
+        <% @library.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form_with model: @library, data: { turbo: false } do |form| %>
+    <div class="library-field"> <%# 変更 %>
+      <%= form.label :title, "題名" %>
+      <%= form.text_field :title %>
+    </div>
+
+    <div class="library-field"> <%# 変更 %>
+      <%= form.label :synopsis, "あらすじ" %>
+      <%= form.text_area :synopsis, rows: 5 %>
+    </div>
+
+    <div class="library-field"> <%# 変更 %>
+      <%= form.label :genre, "ジャンル" %>
+      <%= form.select :genre, Library.genres.keys.map { |k| [I18n.t("enums.library.genre.#{k}", default: k), k] }, { include_blank: "選択してください" } %>
+    </div>
+
+    <div class="library-field"> <%# 変更 %>
+      <%= form.label :tag, "キーワード" %>
+      <%= form.text_field :tag, placeholder: "カンマ区切りで入力（例: ファンタジー, 完結）" %>
+    </div>
+
+    <div class="library-field"> <%# 変更 %>
+      <%= form.label :status, "ステータス" %>
+      <%= form.select :status, Library.statuses.keys.map { |k| [I18n.t("enums.library.status.#{k}", default: k), k] } %>
+    </div>
+
+    <%= form.submit class: "library-submit-action" %> <%# 変更 %>
+  <% end %>
+</div>

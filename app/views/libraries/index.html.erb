@@ -1,19 +1,45 @@
-<table>
-    <thead>
-        <tr>
-<th>タイトル</th><th>あらすじ</th>
-</tr>
-</thead>
-<tbody>
-<% @libraries.each do |library| %>
+<%= render "users/user-tag", user: @user %>
+
+<table class="library-table">
+  <thead>
     <tr>
-     
-      <td><%= library.title %></td>
-      <td><%= library.synopsis %></td>
-     <td> <%= link_to "書く", novel_library_path(library) %></td>
-      
- <td> <%= button_to "削除する", library_path(library), method: :delete, data: { confirm: "本当に削除しますか？" } %></td>
+      <th>タイトル</th>
     </tr>
-  <% end %>
+  </thead>
+  <tbody>
+    <% @libraries.each do |library| %>
+      <tr>
+        <td>
+          <details class="library-details">
+            <!-- summaryタグの中身が、常に表示される「タイトル」になります -->
+            <summary class="library-summary">
+              <span><%= library.title %></span>
+              <span>作者：<%= current_user.name %></span>
+            </summary>
+
+            
+            <!-- この中に、ドロップダウンで隠しておきたい情報を自由に配置します -->
+            <div class="library-content">
+              <%# 例：ライブラリの説明文（カラム名が description の場合） %>
+              <% if library.respond_to?(:description) && library.description.present? %>
+                <p class="description"><%= library.description %></p>
+              <% end %>
+
+              <ul class="info-list">
+                <li><strong>更新日:</strong> <%= library.updated_at.strftime('%Y/%m/%d') %></li>
+                 <li><strong>ジャンル:</strong> <%= library.genre %></li>
+                  <li><strong>キーワード:</strong> <%= library.tag %></li>
+                <%# 他に隠したい情報（住所、開館時間、管理者名など）があればここに追加 %>
+              </ul>
+
+              <!-- 元々あった小説一覧画面へのリンクも、開いた中に入れておくとすっきりします -->
+              <div class="link-box">
+                <%= link_to "このライブラリの小説一覧を見る →", library_novels_path(library), class: "btn-link" %>
+              </div>
+            </div>
+          </details>
+        </td>
+      </tr>
+    <% end %>
   </tbody>
 </table>

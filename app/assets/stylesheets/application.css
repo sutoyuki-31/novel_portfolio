@@ -9,7 +9,267 @@
  * compiled file so the styles you add here take precedence over styles defined in any other CSS
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
- *
  *= require_tree .
  *= require_self
+ 
  */
+
+
+
+.Header {
+  /* ─── 画面上部に固定する設定 ─── */
+  position: fixed;     /* 画面に対して位置を固定する */
+  top: 0;              /* 画面の最上部にぴったりくっつける */
+  left: 0;             /* 画面の左端にぴったりくっつける */
+  width: 100%;         /* ヘッダーの横幅を画面いっぱいに広げる */
+  z-index: 9999;       /* 💡 数字を大きくして、他の要素より手前に表示（優先度を最大に） */
+  box-sizing: border-box; /* paddingが含まれても横幅が100%を超えないようにする */
+
+  /* ─── 既存のスタイル ─── */
+  display: flex;       
+  align-items: center; 
+  gap: 20px;           
+  padding: 15px;       
+  background-color: #f8f9fa; 
+  box-shadow: 0 2px 4px rgba(163, 86, 22, 0.685); 
+}
+
+/* ロゴのスタイル（左側に残る） */
+.Header-logo {
+  text-decoration: none;
+  color: #333333;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-right: auto; /* これにより、これ以降の要素（メニュー）がすべて右寄せになります */
+}
+
+/* 各リンク（ボタン）の共通スタイル */
+.Header-list {
+  text-decoration: none;
+  color: #333333;
+  font-weight: 500;
+  padding: 8px 12px;
+  transition: opacity 0.2s;
+}
+
+.Header-list:hover {
+  opacity: 0.7;
+}
+
+
+/* libralies/index */
+
+/* --- テーブル全体の枠線・余白調整 --- */
+.library-table {
+  width: 73%;
+  border-collapse: collapse;
+  margin: 0 auto; /* ★ テーブルを画面（または親要素）の中央に寄せる */
+}
+
+/* ヘッダー（thead）の見出しデザイン */
+.library-table th {
+  text-align: left;                  /* テキストを左寄せに */
+  padding: 12px 16px;                /* summaryの余白（12px 16px）と美しく揃える */
+  font-size: 0.9em;
+  color: #666666;                    /* 少し薄めの色で上品に */
+  border-bottom: 2px solid #50a13cb9;/* アクセントカラーの線を引く */
+}
+
+.library-table td {
+  padding: 8px 0;                    /* 上下に余白を作ってデータの塊を独立させる */
+  border-bottom: 2px solid #e0e0e0;  /* 仕切り線を強調 */
+}
+
+/* 最後の行の仕切り線を消してスッキリさせる */
+.library-table tr:last-child td {
+  border-bottom: none;
+}
+
+
+/* --- detailsタグ（アコーディオン全体） --- */
+.library-details {
+  display: block;
+  width: 100%;
+  background-color: #ffffff;         /* 基本の背景は白（カード風） */
+  border-radius: 4px;                /* 角を丸める */
+  transition: box-shadow 0.2s ease;
+}
+
+/* 【開いている時】全体を軽い影で包んで強調 */
+.library-details[open] {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 4px;                /* 開いたデータの後に少し隙間を作る */
+}
+
+
+/* --- summaryタグ（見出し・クリックエリア） --- */
+.library-summary {
+  display: flex;                     /* 横並びにして、アイコンを右端に寄せる */
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 12px 16px;                /* 押しやすいように余白を少し広めに */
+  font-weight: bold;
+  outline: none;
+  list-style: none;                  /* 標準の矢印を非表示（モダンブラウザ用） */
+}
+
+.library-summary span {
+  padding-right: 12px;
+  word-break: break-all; /* 必要に応じて、長い英単語の折り返し対策 */
+}
+
+/* Safari用のアローアイコン非表示設定 */
+.library-summary::-webkit-details-marker {
+  display: none;
+}
+
+/* マウスホバー時、および【開いている時】の背景色を薄いグレーにする */
+.library-summary:hover,
+.library-details[open] .library-summary {
+  background-color: #f5f5f5;         /* 開いている間もグレーを維持して選択中であることを分かりやすく */
+}
+
+/* キーボード操作（Tabキー）時のアクセシビリティ対応 */
+.library-summary:focus-visible {
+  outline: 2px solid #50a13cb9;      /* アクセントカラーの枠線を表示 */
+  outline-offset: -2px;
+}
+
+/* --- 右側の独自矢印アイコン（CSSで作成する矢印） --- */
+.library-summary::after {
+  content: "";                       /* 文字ではなくCSSで描画するため空にする */
+  display: inline-block;             /* transformを効かせるために必要 */
+  width: 8px;                        /* 矢印の幅 */
+  height: 8px;                       /* 矢印の高さ */
+  border-bottom: 2px solid #555555;  /* 矢印の線（下） */
+  border-right: 2px solid #555555;   /* 矢印の線（右） */
+  transform: rotate(45deg);          /* 45度回転させて下向き（＞を傾けた状態）にする */
+  transform-origin: center center;   /* 【重要】中央を軸に回転させる */
+  transition: transform 0.2s ease;   /* 回転時のアニメーション */
+  margin-right: 4px;                 /* 右側の余白調整 */
+}
+
+/* 【開いている時】下向き（45deg）から上向き（-135deg）に綺麗に180度回転させる */
+.library-details[open] .library-summary::after {
+  transform: rotate(-135deg);
+}
+
+/* --- library-content（広がる中身のボックス） --- */
+.library-content {
+  padding: 16px;                     /* 上下の余白を少し広げて、中身が見やすくなるよう調整 */
+  background-color: #fafafa;
+  border-left: 3px solid #50a13cb9;  /* アクセントの左線 */
+}
+
+.library-content p.description {
+  margin: 0 0 12px 0;
+  line-height: 1.6;                  /* ほんの少し行間を広げて視認性アップ */
+  color: #333;
+}
+
+/* リスト・ボタン装飾 */
+.info-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px 0;
+  font-size: 0.9em;
+  color: #666;
+}
+
+.info-list li {
+  margin-bottom: 6px;                /* 行間の余白を微増 */
+}
+
+.link-box {
+  margin-top: 16px;
+}
+
+.btn-link {
+  color: #007bff;
+  text-decoration: none;
+  font-size: 0.9em;
+  font-weight: bold;
+}
+
+.btn-link:hover {
+  text-decoration: underline;
+}
+
+
+/*novel/index */
+.novel-preview-row {
+  background-color: #fcfaf2; /* 目に優しい生成り色の背景 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  /* 💡テーブルの行に対して border-radius を効かせるには、
+     親の <table> に border-collapse: separate; が必要です */
+}
+
+/* 各セルの共通設定 */
+.novel-preview-row td {
+  padding: 24px 20px;
+  vertical-align: top; /* 上揃えにして見栄えを統一 */
+  color: #333333;
+}
+
+/* 左側：基本情報（20%） */
+.novel-info {
+  width: 20%;
+}
+.novel-info strong {
+  display: block;
+  font-size: 1.1rem;
+  margin-bottom: 6px;
+}
+.novel-info small {
+  color: #666666;
+}
+
+/* 中央：あらすじ（50%） */
+.novel-synopsis {
+  width: 50%;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  white-space: pre-wrap; /* 改行を有効にする */
+}
+
+/* 右側：エピソード一覧（30%） */
+.novel-episodes {
+  width: 30%;
+  border-left: 1px solid #e0dbcd; /* 区切り線を入れて視認性アップ */
+}
+
+.novel-entries-info {
+  margin-bottom: 12px;
+  font-size: 0.85em;
+  color: #666666;
+}
+
+/* リストの設定（最初の重複を解消） */
+.novel-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0 0 16px 0;
+}
+.novel-list li {
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+.novel-list a {
+  color: #333333;
+  text-decoration: none;
+}
+.novel-list a:hover {
+  text-decoration: underline;
+  color: #a08040; /* ほんのりアクセントカラー */
+}
+
+/* ページネーション */
+.novel-pagination {
+  margin-top: 12px;
+}
+
+
+
+
+

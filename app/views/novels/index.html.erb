@@ -1,0 +1,32 @@
+<tr class="novel-preview-row">
+  <!-- 左側：小説の基本情報 -->
+  <td class="novel-info">
+    <strong><%= @library.title %></strong><br>
+    <!-- 修正点①：@users（複数形）ではなく @user（単数形）または小説に紐づく user にする -->
+    <small>作者: <%= @library.user.name %></small>
+  </td>
+  
+  <!-- 中央：あらすじ -->
+  <td class="novel-synopsis">
+    <%= @library.synopsis %>
+  </td>
+  
+  <!-- 右側：エピソード一覧 -->
+  <td class="novel-episodes" aria-label="エピソード一覧">
+    <!-- 修正点②：一般的に小説の1話1話は @novels ではなく @episodes 等の変数名が直感的 -->
+    <div class="novel-entries-info">
+      <%= page_entries_info @novels %>
+    </div>
+
+    <ul class="novel-list">
+      <% @novels.each do |novel| %>
+        <li><%= link_to novel.subtitle, [novel.library, novel] %></li>
+        <li><%= novel.created_at.strftime('%Y/%m/%d') %> (<%= novel.updated_at.strftime('%Y/%m/%d') %>)</li>
+      <% end %>
+    </ul>
+
+    <div class="novel-pagination">
+      <%= paginate @novels %>
+    </div>
+  </td>
+</tr>

@@ -1,0 +1,23 @@
+<tr>
+  <td><%= @library.title %></td>
+  <td><%= @library.synopsis %></td>
+  
+</tr>
+
+<!-- 小説一覧（リスト構造） -->
+<tr>
+  <td colspan="3">
+    <ul>
+      <% @novels.each do |novel| %>
+        <li><%= link_to novel.subtitle, library_novel_path(@library, novel), class: "novel-list" %></li>
+      <% end %>
+    </ul>
+  </td>
+</tr>
+
+<!-- 作成リンク -->
+<tr>
+  <td colspan="3">
+    <%= link_to "作成", new_library_novel_path(@library) %>
+  </td>
+</tr>

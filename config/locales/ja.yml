@@ -1,0 +1,33 @@
+ja:
+  activerecord:
+    models:
+      library: 図書館
+      novel: 小説
+      user: ユーザー
+    attributes:
+      library:
+        title: タイトル
+        synopsis: あらすじ
+      novel:
+        subtitle: サブタイトル
+        story: 本文
+
+  enums:
+    library:
+      status:
+        draft: "下書き"
+        published: "公開"
+        archived: アーカイブ
+      genre:
+        another: "異世界" 
+        reality: "現代"  
+        highfantasy: "ハイファンタジー"   
+        lowfantasy: "ローファンタジー" 
+    novel:
+      status:
+        draft: "下書き"
+        published: "公開"
+        archived: アーカイブ
+
+
+
