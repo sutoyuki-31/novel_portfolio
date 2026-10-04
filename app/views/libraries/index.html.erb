@@ -1,45 +1,89 @@
+<%# app/views/libraries/index.html.erb %>
 <%= render "users/user-tag", user: @user %>
 
-<table class="library-table">
-  <thead>
-    <tr>
-      <th>タイトル</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @libraries.each do |library| %>
+<!-- 🔍 検索フォームコンテナ -->
+<div class="lib-search-form-container">
+  <%= form_with url: libraries_path, method: :get, local: true, data: { turbo_frame: "libraries_list" } do |f| %>
+    
+    <!-- 📄 テキスト検索 -->
+    <div class="lib-form-group">
+      <%= f.label :keyword, "キーワード検索", class: "lib-search-label" %>
+      <%= f.text_field :keyword, value: params[:keyword], placeholder: "タイトル、キーワードで検索...", class: "lib-search-input" %>
+    </div>
+
+    <!-- ⏹️ ジャンル検索 -->
+    <div class="lib-form-group">
+      <span class="lib-search-label">ジャンル（複数選択可）</span>
+      <div class="lib-genre-options-wrap">
+        <% Library.genres.keys.each do |genre_key| %>
+          <label class="lib-genre-label">
+            <%= check_box_tag "genres[]", genre_key, params[:genres]&.include?(genre_key), id: "genre_#{genre_key}" %>
+            <%= I18n.t("enums.library.genre.#{genre_key}", default: genre_key.humanize) %>
+          </label>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- 🔍 アクションボタン -->
+    <div class="lib-search-actions-wrap">
+      <%= f.submit "この条件で検索", class: "lib-btn-submit" %>
+      <%# 💡 条件未入力時でも枠を維持し、常に初期状態へ戻せるように `if` 条件を撤去 %>
+      <%= link_to "条件をクリア", libraries_path, data: { turbo_frame: "libraries_list" }, class: "lib-btn-clear" %>
+    </div>
+
+  <% end %>
+</div>
+
+<!-- ⚡ Turbo Frame による結果テーブル -->
+<%= turbo_frame_tag "libraries_list" do %>
+  <table class="lib-table">
+    <thead>
       <tr>
-        <td>
-          <details class="library-details">
-            <!-- summaryタグの中身が、常に表示される「タイトル」になります -->
-            <summary class="library-summary">
-              <span><%= library.title %></span>
-              <span>作者：<%= current_user.name %></span>
-            </summary>
-
-            
-            <!-- この中に、ドロップダウンで隠しておきたい情報を自由に配置します -->
-            <div class="library-content">
-              <%# 例：ライブラリの説明文（カラム名が description の場合） %>
-              <% if library.respond_to?(:description) && library.description.present? %>
-                <p class="description"><%= library.description %></p>
-              <% end %>
-
-              <ul class="info-list">
-                <li><strong>更新日:</strong> <%= library.updated_at.strftime('%Y/%m/%d') %></li>
-                 <li><strong>ジャンル:</strong> <%= library.genre %></li>
-                  <li><strong>キーワード:</strong> <%= library.tag %></li>
-                <%# 他に隠したい情報（住所、開館時間、管理者名など）があればここに追加 %>
-              </ul>
-
-              <!-- 元々あった小説一覧画面へのリンクも、開いた中に入れておくとすっきりします -->
-              <div class="link-box">
-                <%= link_to "このライブラリの小説一覧を見る →", library_novels_path(library), class: "btn-link" %>
-              </div>
-            </div>
-          </details>
-        </td>
+        <th>タイトル</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% if @libraries.empty? %>
+        <tr>
+          <%# 💡 インラインスタイルを CSS 側に寄せるためのクラスを追加可能ですが、現状のままでも動作します %>
+          <td style="text-align: center; padding: 20px; color: #888;">
+            該当するライブラリが見つかりませんでした。
+          </td>
+        </tr>
+      <% else %>
+        <% @libraries.each do |library| %>
+          <tr>
+            <td>
+              <details class="lib-details">
+                <summary class="lib-summary">
+                  <div class="lib-summary-left">
+                    <%# 💡 スマホで綺麗に折り返す or 分割するために個別のクラスを推奨 %>
+                    <span class="lib-title-text"><%= library.title %></span>
+                    <span class="lib-author-text">作者：<%= library.user&.name %></span>
+                  </div>
+                </summary>
+
+                <div class="lib-content">
+                  <% if library.respond_to?(:description) && library.description.present? %>
+                    <p class="lib-description"><%= library.description %></p>
+                  <% end %>
+
+                  <ul class="lib-info-list">
+                    <li><strong>更新日:</strong> <%= library.updated_at.strftime('%Y/%m/%d') %></li>
+                    <li><strong>ジャンル:</strong> <%= I18n.t("enums.library.genre.#{library.genre}", default: library.genre&.humanize) %></li>
+                    <li><strong>キーワード:</strong> <%= library.tag %></li>
+                    <li><strong>高評価:</strong> <%= library.count_of_likes %></li>
+                  </ul>
+
+                  <div class="lib-link-box">
+                    <%= link_to "このライブラリの小説一覧を見る →", library_novels_path(library), class: "lib-btn-link", data: { turbo_frame: "_top" } %>
+                  </div>
+                </div>
+              </details>
+            </td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

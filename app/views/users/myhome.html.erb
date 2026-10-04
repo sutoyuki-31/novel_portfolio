@@ -1,12 +1,38 @@
-<%# 作成した作品の一覧を載せる　編集削除非表示設定など%>
-<%# プロフィール%>
-<%# プロフィール%>
-<%= current_user.id %>
-<%= current_user.name %> 
-<%= current_user.body %> 
-<%= render "users/myhome-tag", user: @user %>
+<%= render "users/myhome-tag", library: @library %>
 
+<%# users/myhome %>
 
+<div class="user-home-container">
+  <!-- プロフィール -->
+  <div class="profile-box">
+    <div>
+      <span class="user-id">ID: <%= current_user.id %></span>
+      <h1 class="user-name"><%= current_user.name %></h1>
+      <%= render "users/myhome-tag", user: @user %>
+    </div>
+    <%= link_to "編集", edit_user_path(current_user), class: "link-text" %>
+  </div>
 
+  <!-- ライブラリ一覧 -->
+  <h2 class="section-title">自分の作品</h2>
+  
+  <div class="library-list">
+    <% @libraries.each do |library| %>
+      <div class="library-item">
+        <!-- 変更：タイトル自体を詳細へのリンクに変更 -->
+        <h3 class="library-title">
+          <%= link_to library.title, library_path(library), class: "title-link" %>
+        </h3>
+        
+        <% if library.respond_to?(:description) && library.description.present? %>
+          <p class="library-desc"><%= safe_join(library.description.split("\n"), tag.br) %></p>
+        <% end %>
 
-
+        <div class="library-meta">
+          <span>作成: <%= l(library.created_at, format: :short) %></span>
+          
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

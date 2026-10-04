@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  devise_for :users
 # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
 #  ページ番号付きの専用URL
@@ -7,11 +6,18 @@ Rails.application.routes.draw do
 
 #  通常のURL（1ページ目を表示するため、あるいはデフォルト用）
 
+
+
+devise_for :users
+
 resources :libraries do
     collection do
+      get "history" # 閲覧履歴のデータ取得用URL (/libraries/history)
       get "list"
     end
-   resources :novels
+   resources :novels do
+    resource :likes, only: [ :create, :destroy ]
+  end
 end
 
  resources :users, only: [ :index, :show, :create, :new, :edit, :update, :destroy ] do

@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
  before_action :configure_permitted_parameters, if: :devise_controller?
 
 
-def configure_permitted_parameters
+  def configure_permitted_parameters
     # ユーザー登録（サインアップ）時に name カラムの保存を許可する
     devise_parameter_sanitizer.permit(:sign_up, keys: [ :name ])
 

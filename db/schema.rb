@@ -10,17 +10,40 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_09_24_130608) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_03_090806) do
   create_table "libraries", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.string "title"
+    t.string "title", null: false
     t.text "synopsis"
-    t.string "genre"
+    t.integer "genre", null: false
     t.string "tag"
     t.integer "status", default: 0, null: false
+    t.integer "genre_filter"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "total_likes_count", default: 0, null: false
+    t.integer "total_views_count", default: 0, null: false
     t.index ["user_id"], name: "index_libraries_on_user_id"
+  end
+
+  create_table "likes", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "novel_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["novel_id"], name: "index_likes_on_novel_id"
+    t.index ["user_id"], name: "index_likes_on_user_id"
+  end
+
+  create_table "novel_views", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "novel_id", null: false
+    t.string "session_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["novel_id"], name: "index_novel_views_on_novel_id"
+    t.index ["session_id"], name: "index_novel_views_on_session_id"
+    t.index ["user_id"], name: "index_novel_views_on_user_id"
   end
 
   create_table "novels", force: :cascade do |t|
@@ -32,6 +55,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_24_130608) do
     t.datetime "updated_at", null: false
     t.integer "library_id", null: false
     t.integer "page_number"
+    t.integer "view_counts_count", default: 0, null: false
     t.index ["library_id", "page_number"], name: "index_novels_on_library_id_and_page_number", unique: true
     t.index ["user_id"], name: "index_novels_on_user_id"
   end
@@ -51,6 +75,10 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_24_130608) do
   end
 
   add_foreign_key "libraries", "users"
+  add_foreign_key "likes", "novels"
+  add_foreign_key "likes", "users"
+  add_foreign_key "novel_views", "novels"
+  add_foreign_key "novel_views", "users"
   add_foreign_key "novels", "libraries"
   add_foreign_key "novels", "users"
 end

@@ -19,8 +19,10 @@
 
   <body>
  <header class="Header">
-  <%# 左側に表示するサイトロゴを追加 %>
-  <%= link_to "サイト名", root_path, class: "Header-logo" %>
+  <%# link_to（aタグ）自体にクラスを付与します %>
+  <%= link_to root_path, class: "Header-logo" do %>
+    <%= image_tag "ChatGPT Image 2026年10月4日 20_54_17.png", class: "Header-logo-img" %>
+  <% end %>
 
   <% if user_signed_in? %>
     <%= link_to "マイホーム", myhome_users_path, class: "Header-list" %>
@@ -30,7 +32,6 @@
     <%= link_to 'ログイン', new_user_session_path, class: "Header-list" %>
   <% end %>
 </header>
-
 
  
     <%= yield %>

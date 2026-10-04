@@ -1,27 +1,36 @@
 <tr class="novel-preview-row">
   <!-- 左側：小説の基本情報 -->
   <td class="novel-info">
-    <strong><%= @library.title %></strong><br>
-    <!-- 修正点①：@users（複数形）ではなく @user（単数形）または小説に紐づく user にする -->
+    <strong><%= @library.title %></strong>
+    <!-- 修正点①：小説に紐づく user に修正済み -->
     <small>作者: <%= @library.user.name %></small>
   </td>
   
   <!-- 中央：あらすじ -->
   <td class="novel-synopsis">
-    <%= @library.synopsis %>
+    <!-- simple_format を使うことで、安全に改行や段落を綺麗に表現できます -->
+    <%= simple_format(@library.synopsis) %>
   </td>
   
   <!-- 右側：エピソード一覧 -->
   <td class="novel-episodes" aria-label="エピソード一覧">
-    <!-- 修正点②：一般的に小説の1話1話は @novels ではなく @episodes 等の変数名が直感的 -->
+    <!-- 修正点②：ページネーション対象がエピソード（novel）であるため、このままで動きます（変数名を @episodes に変えた場合はここも変更してください） -->
     <div class="novel-entries-info">
       <%= page_entries_info @novels %>
     </div>
 
     <ul class="novel-list">
       <% @novels.each do |novel| %>
-        <li><%= link_to novel.subtitle, [novel.library, novel] %></li>
-        <li><%= novel.created_at.strftime('%Y/%m/%d') %> (<%= novel.updated_at.strftime('%Y/%m/%d') %>)</li>
+        <!-- 改善点①：1つの <li> 内にタイトルと日付をまとめ、視認性を大幅にアップ -->
+        <li>
+          <%= link_to novel.subtitle, [novel.library, novel] %>
+          <span class="novel-date">
+            <%= novel.created_at.strftime('%Y/%m/%d') %>
+            <% if novel.created_at != novel.updated_at %>
+              <small class="novel-update-date">(更新: <%= novel.updated_at.strftime('%Y/%m/%d') %>)</small>
+            <% end %>
+          </span>
+        </li>
       <% end %>
     </ul>
 

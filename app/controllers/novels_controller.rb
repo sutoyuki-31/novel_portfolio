@@ -2,7 +2,7 @@ class NovelsController < ApplicationController
   before_action :authenticate_user!, except: [ :index, :show ]
 
   before_action :set_user_library, except: [ :index, :show ]
-  before_action :set_public_library, royal_only: [ :index, :show ]
+  before_action :set_public_library, only: [ :index, :show ]
 
   before_action :set_novel, only: [ :edit, :update, :destroy, :show ]
   def index
@@ -12,12 +12,29 @@ class NovelsController < ApplicationController
   end
 
   def show
-    # @library = Library.find(params[:library_id])
-    # @novel = @library.novels.find(params[:id])
+   session[:init] = true
+    current_session_id = session.id.to_s
+
+    # 閲覧数の重複カウント防止（ログイン/ゲスト共通ロジック）
+    conditions = NovelView.where(session_id: current_session_id, novel_id: @novel.id)
+
+    if user_signed_in?
+      conditions = conditions.or(NovelView.where(user_id: current_user.id, novel_id: @novel.id))
+    end
+
+    unless conditions.exists?
+      NovelView.create(
+        novel_id: @novel.id,
+        session_id: current_session_id,
+        user_id: current_user&.id
+      )
+    end
+
     # ページの前後へ
     @previous_novel = @novel.previous
     @next_novel = @novel.next
   end
+
 
   def mylit
   end

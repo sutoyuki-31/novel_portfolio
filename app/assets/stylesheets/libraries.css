@@ -1,22 +1,65 @@
 /*libraries/show*/
-/* コンテナ */
+/* libraries/show */
 
-/* タイトルブロック（新規追加） */
+.lib-show-container {
+  margin: 80px auto 30px 20px;
+}
+
+/* タイトルブロックの調整 */
 .lib-show-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 15px;
   margin-bottom: 25px;
 }
 
-/* 独立したタイトル専用クラス（新規追加） */
+.lib-show-title-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .lib-show-title {
-  display: inline-block;
   margin: 0;
   color: #333333;
   font-size: 1.25rem;
   font-weight: 600;
 }
 
-.lib-show-container {
-  margin: 80px auto 30px 20px;
+/* ステータスバッジ（新規） */
+.lib-show-status-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  background-color: #f0f0f0;
+  color: #666666;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 4px;
+  border: 1px solid #e0e0e0;
+}
+
+/* 属性情報エリア（ジャンル・キーワード）（新規） */
+.lib-show-meta-wrapper {
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.lib-show-meta-item {
+  display: flex;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.lib-show-meta-label {
+  width: 100px;
+  color: #777777;
+  font-weight: 500;
+}
+
+.lib-show-meta-value {
+  color: #333333;
 }
 
 /* ページ内見出し */
@@ -27,34 +70,17 @@
   font-weight: 600;
 }
 
-/* ライブラリ情報テーブル */
-.lib-show-table {
-  width: 100%;
-  margin-bottom: 25px;
-  border-collapse: collapse;
-}
-
-.lib-show-table th,
-.lib-show-table td {
-  padding: 12px 0;
-  text-align: left;
-  vertical-align: top;
-}
-
-.lib-show-table th {
-  color: #777777;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.lib-show-table td {
-  color: #333333;
+.lib-show-synopsis-wrapper .lib-show-heading {
+  margin-top: 0;
 }
 
 .lib-show-synopsis {
   margin: 0;
   padding: 0;
   text-align: left;
+  color: #333333;
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
 
 /* 話数一覧リスト */
@@ -86,21 +112,16 @@
   text-decoration: underline;
 }
 
-/* 操作系リンク（編集・削除・新規作成） */
+/* 操作系リンク・ボタン */
 .lib-show-actions {
   margin-top: 20px;
 }
 
-.lib-show-link-action {
-  margin-left: 15px;
-  vertical-align: middle;
+form.button_to {
+  display: inline; /* button_toのformが改行されるのを防ぐ */
 }
 
-/* あらすじブロック（新規追加） */
-.lib-show-synopsis-wrapper .lib-show-heading {
-  margin-top: 0;
-}
-
+.lib-show-link-action,
 .lib-show-link-danger,
 .lib-show-link-primary {
   font-size: 0.875rem;
@@ -117,7 +138,13 @@
   color: #555555;
 }
 
+/* 削除ボタン（button_to用にスタイルをリセット＆最適化） */
 .lib-show-link-danger {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  cursor: pointer;
   margin-left: 15px;
   color: #cc0000;
 }
@@ -127,41 +154,44 @@
   font-weight: 500;
 }
 
+/* スマホ用レスポンシブ対応 */
 @media screen and (max-width: 767px) {
-  /* コンテナの左余白をスマホ用に最適化（80pxだと広すぎるため縮小） */
   .lib-show-container {
     margin: 20px 15px 30px 15px;
   }
 
-  /* タイトルと編集リンクのブロックを縦並び（Flexbox）に変更 */
   .lib-show-title-wrapper {
-    display: flex;
     flex-direction: column;
-    gap: 8px; /* タイトルと編集ボタンの間の隙間 */
+    align-items: flex-start;
+    gap: 8px;
     margin-bottom: 20px;
   }
 
-  /* インラインブロックを解除して横幅いっぱいに */
-  .lib-show-title {
-    display: block;
-    font-size: 1.125rem; /* スマホ用に文字サイズを少し小さく */
+  .lib-show-title-header {
+    flex-wrap: wrap;
+    gap: 8px;
   }
 
-  /* 編集リンクの余白と位置をリセット */
+  .lib-show-title {
+    font-size: 1.125rem;
+  }
+
   .lib-show-link-action {
     margin-left: 0;
-    vertical-align: baseline;
   }
 
-  /* 話数一覧の「タイトル」と「削除」の間隔を少し広げてタップしやすく */
+  .lib-show-meta-label {
+    width: 80px; /* スマホ用に少し狭める */
+  }
+
   .lib-show-item {
     justify-content: space-between;
-    padding: 8px 0; /* タップ領域確保のために上下パディングを拡大 */
+    padding: 8px 0;
   }
 
   .lib-show-link-danger {
     margin-left: 10px;
-    flex-shrink: 0; /* 削除テキストが折り返されないように固定 */
+    flex-shrink: 0;
   }
 }
 

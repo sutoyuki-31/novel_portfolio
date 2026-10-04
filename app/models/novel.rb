@@ -1,11 +1,17 @@
 class Novel < ApplicationRecord
 belongs_to :user
 belongs_to :library
+has_many :likes
+has_many :novel_views, dependent: :destroy
 before_validation :assign_page_number, on: :create
 after_destroy :renumber_subsequent_pages
-
+after_save :update_library_total_counts, if: :saved_change_to_view_counts_count?
   def to_param
     page_number.to_s
+  end
+
+  def update_library_total_counts
+    library.update_total_counts
   end
 
   def previous
@@ -24,6 +30,10 @@ after_destroy :renumber_subsequent_pages
   # Enumの設定
   enum :status, { draft: 0, published: 1, archived: 2 }
 
+  def liked_by?(user)
+    return false unless user # 💡 念のためユーザーが nil（ログアウト時）の対策も入れておくと安全です
+    likes.exists?(user_id: user.id)
+  end
   private
 
   def renumber_subsequent_pages

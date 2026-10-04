@@ -1,38 +1,60 @@
+<!-- app/views/novels/show.html.erb -->
+
+<!-- Stimulusが自動でケバブケースに変換して認識します -->
+<div data-controller="browse-history-recorder" 
+     data-browse-history-recorder-library-id-value="<%= @novel.library_id %>"
+     data-browse-history-recorder-novel-id-value="<%= @novel.id %>"
+     data-browse-history-recorder-novel-subtitle-value="<%= @novel.subtitle %>"></div>
 
 <h1><%= @library.title %></h1>
 <h2><%= @novel.subtitle %></h2>
-
-
-
 <hr>
 
 <!-- ページ移動ナビゲーション -->
-<div class="page-navigation" style="display: flex; justify-content: space-between;">
-  
+<div class="page-navigation" style="display: flex; justify-content: space-between; margin-bottom: 20px;">
   <div class="prev-page">
     <% if @previous_novel.present? %>
-      <%= link_to "← 前のページへ", [@library, @previous_novel] %>
+      <%= link_to "← 前のページ", [@library, @previous_novel] %>
     <% else %>
-      <span style="color: #ccc;">最初のページです</span>
+      <span style="color: #ccc;">最初のページ</span>
     <% end %>
   </div>
 
   <div class="back-to-library">
-    <%= link_to "目次（タイトル詳細）へ戻る", library_novels_path(@library) %>
+    <%= link_to "目次", library_novels_path(@library) %>
   </div>
 
   <div class="next-page">
     <% if @next_novel.present? %>
-      <%= link_to "次のページへ →", [@library, @next_novel] %>
+      <%= link_to "次のページ →", [@library, @next_novel] %>
     <% else %>
-      <span style="color: #ccc;">最後のページです</span>
+      <span style="color: #ccc;">最後のページ</span>
     <% end %>
   </div>
-
 </div>
 
-  
-  <tr class="novel-preview-row">
-  
-  <td class="novel-story-cell"><%= simple_format(@novel.story) %></td>
-</tr>
+<!-- 【修正】table外でのtr/tdの崩れを防ぐためdiv等に変更するのが安全です -->
+<div class="novel-preview-row">
+  <div class="novel-story-cell"><%= simple_format(@novel.story) %></div>
+</div>
+
+<hr style="margin-top: 40px;">
+
+<!-- 高評価（いいね）機能セクション -->
+<div class="like-section" style="text-align: center; margin: 30px 0;">
+  <% if user_signed_in? %>
+    <!-- ログインしている場合 -->
+    <% if @novel.liked_by?(current_user) %>
+      <%= link_to '❤️ 高評価を取り消す', library_novel_likes_path(@library, @novel), data: { turbo_method: :delete }, class: "btn-dislike", style: "color: red; text-decoration: none; font-weight: bold;" %>
+    <% else %>
+      <%= link_to '♡ 高評価する', library_novel_likes_path(@library, @novel), data: { turbo_method: :post }, class: "btn-like", style: "text-decoration: none; font-weight: bold;" %>
+    <% end %>
+  <% else %>
+    <!-- ログインしていない場合 -->
+    <p style="color: #666;"><%= link_to 'ログイン', new_user_session_path %>するとこの小説を高評価できます</p>
+  <% end %>
+
+  <div class="like-count" style="margin-top: 10px; color: #555;">
+    現在の高評価数: <strong><%= @novel.likes.count %></strong>
+  </div>
+</div>

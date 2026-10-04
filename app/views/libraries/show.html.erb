@@ -3,10 +3,28 @@
 
   <!-- タイトルと編集リンクのブロック -->
   <div class="lib-show-title-wrapper">
-    <h1 class="lib-show-title">
-      <%= @library.title %>
-    </h1>
+    <div class="lib-show-title-header">
+      <h1 class="lib-show-title">
+        <%= @library.title %>
+      </h1>
+      <!-- ステータスをバッジ・ラベル風に表示 -->
+      <% if @library.status.present? %>
+        <span class="lib-show-status-badge"><%= @library.status %></span>
+      <% end %>
+    </div>
     <%= link_to "編集", edit_library_path(@library), class: "lib-show-link-action" %>
+  </div>
+
+  <!-- ライブラリの属性情報（ジャンル・キーワード） -->
+  <div class="lib-show-meta-wrapper">
+    <div class="lib-show-meta-item">
+      <span class="lib-show-meta-label">ジャンル</span>
+      <span class="lib-show-meta-value"><%= @library.genre.presence || "未設定" %></span>
+    </div>
+    <div class="lib-show-meta-item">
+      <span class="lib-show-meta-label">キーワード</span>
+      <span class="lib-show-meta-value"><%= @library.tag.presence || "未設定" %></span>
+    </div>
   </div>
 
   <!-- あらすじのブロック -->
@@ -23,9 +41,11 @@
       <% @novels.each do |novel| %>
         <li class="lib-show-item">
           <%= link_to novel.subtitle, edit_library_novel_path(@library, novel), class: "lib-show-link-main" %>
-          <%= link_to "削除", library_novel_path(@library, novel), 
-                      data: { turbo_method: :delete, turbo_confirm: "本当に削除しますか？" }, 
-                      class: "lib-show-link-danger" %>
+          <!-- 安全でスタイルの崩れない button_to に変更 -->
+          <%= button_to "削除", library_novel_path(@library, novel), 
+                        method: :delete,
+                        data: { turbo_confirm: "本当に削除しますか？" }, 
+                        class: "lib-show-link-danger" %>
         </li>
       <% end %>
     </ul>

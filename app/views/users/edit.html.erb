@@ -1,0 +1,27 @@
+<%# app/views/users/edit.html.erb %>
+<%= render "users/myhome-tag", library: @library %>
+<h1>プロフィールの編集</h1>
+
+<%= form_with(model: @user, url: user_path, method: :patch, local: true) do |f| %>
+  <% if @user.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= @user.errors.count %>件のエラーが発生しました:</h2>
+      <ul>
+        <% @user.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label :name, "ユーザー名" %>
+    <%= f.text_field :name, class: "" %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit "変更を保存する", class: "" %>
+  </div>
+<% end %>
+
+<hr>

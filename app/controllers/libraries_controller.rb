@@ -1,47 +1,70 @@
 class LibrariesController < ApplicationController
-  # 1. ログイン必須のページを指定（例: 新規作成や編集はログインが必要）
-  before_action :authenticate_user!, except: [ :index ]
-  # 2. 共通のレコード取得  set_libraryの中身を共通化
-  before_action :set_library, only: [ :edit, :update, :destroy ]
+  # 1. ログイン必須のページを指定
+  before_action :authenticate_user!, except: [ :index, :history ]
+  # 2. 共通のレコード取得
+  before_action :set_library, only: [ :show, :edit, :update, :destroy ]
   # 3. 閲覧・編集の権限チェック
-  # before_action :ensure_visible# , only: [ :show ]
   before_action :ensure_correct_user, only: [ :edit, :update, :destroy ]
+  # show用の権限チェック（他人の下書きを見せない等があればここで制御）
+  before_action :ensure_visible_library, only: [ :show ]
 
   def index
-    @libraries = Library.all
-      @librarie = Library.published
+    # 1. ベースデータの取得 💡 ユーザーの事前読み込み ＋ 小説のいいね数を一括集計
+    base_query = Library.published
+                      .includes(:user)
+                      .left_joins(novels: :likes)
+                      .group("libraries.id")
+                      .select("libraries.*", "COUNT(likes.id) AS count_of_likes")
+
+    # 2. テキストキーワード（タイトル・キーワード）で絞り込み
+    if params[:keyword].present?
+      keyword = "%#{ActiveRecord::Base.sanitize_sql_like(params[:keyword])}%"
+      # GROUP BY句があるため、HAVINGではなくWHEREで絞り込むために unscoped から where を繋ぐか、
+      # またはそのままwhereを繋げば、ActiveRecordが自動的に適切なSQL（WHERE節）に組み立ててくれます。
+      base_query = base_query.where("libraries.title LIKE ? OR libraries.tag LIKE ?", keyword, keyword)
+    end
+
+    # 3. enumのジャンル（複数選択対応）でさらに絞り込み
+    if params[:genres].present?
+      base_query = base_query.where(genre: params[:genres])
+    end
+
+    # 最終的な一覧用データを代入
+    @libraries = base_query
+
+    # 4. ランキングの取得 💡 こちらも同様にいいね数を集計して上位10件を取得
+    @library_ranking = Library.published # ランキングも公開中(published)のみにする場合はこちら
+                            .includes(:user)
+                            .left_joins(novels: :likes)
+                            .group("libraries.id")
+                            .select("libraries.*", "COUNT(likes.id) AS count_of_likes")
+                            .order(total_views_count: :desc)
+                            .limit(10)
   end
 
   def list
+    # ログインユーザーのライブラリ一覧（マイページ用など）
     @libraries = current_user.libraries
-    # Kaminariは params[:page] が nil の場合、自動的に1ページ目を表示します
-    # @novels = @library.novels.page(params[:page]).per(10)
   end
 
   def show
-    # 1. ログイン中のユーザーが所有するライブラリのみを検索（他人のものはこの時点でRecordNotFoundになる）
-    @library = current_user.libraries.find(params[:id])
+    # before_action で @library は取得済み
     @novels = @library.novels
-
-    # 2. もし下書き（draft）かつ、本人が所有していない場合はエラーにする
-    # (ただし、1行目で current_user の所有物しか取得していないため、本来この if 文自体が不要になります)
   end
 
   def edit
-     @library = current_user.libraries.find(params[:id])
+    # before_action で @library は取得済みのため、中身は空でOK
   end
 
   def new
     @library = Library.new
-    # @libraries = current_user.libraries.build
   end
+
   def create
     @library = current_user.libraries.build(library_params)
     if @library.save
-      # redirect_to library_novels_path(:library_id)
       redirect_to library_path(@library), notice: "小説を登録しました。", status: :see_other
     else
-      # @novel = current_user.novels
       render :new, status: :unprocessable_content
     end
   end
@@ -56,30 +79,61 @@ class LibrariesController < ApplicationController
 
   def destroy
     if @library.destroy
-       redirect_to library_path, notice: "削除しました", status: :see_other
+       # 💡 削除後は詳細(library_path)ではなく、一覧(libraries_path)へリダイレクト
+       redirect_to libraries_path, notice: "削除しました", status: :see_other
     else
       flash.now[:alert] = @library.errors.full_messages.to_sentence
       render :show, status: :unprocessable_content
     end
   end
 
-  private
+  def history
+    respond_to do |format|
+      format.html do
+        # 1. 最初は空のHTML画面を表示する
+      end
 
+      format.json do
+        # 2. 安全対策：数値（ID）のみの配列に絞り込む
+        library_ids = Array(params[:ids]).map(&:to_i).reject(&:zero?)
 
+        if library_ids.empty?
+          render json: []
+          return
+        end
 
-  def ensure_correct_user
-    # そもそも他人の記事を編集・削除しようとしたら404（またはトップへリダイレクト）
-    if @library.user_id != current_user.id
-      raise ActiveRecord::RecordNotFound
+        @libraries = Library.includes(:novels).where(id: library_ids)
+
+        render json: @libraries.as_json(
+          only: [ :id, :title, :synopsis ],
+          methods: [ :first_novel_id ]
+        )
+      end
     end
   end
+
+  private
 
   def set_library
     @library = Library.find(params[:id])
   end
 
+  def ensure_correct_user
+    # 💡 自身の所有していないライブラリであれば 404 エラーにする
+    if @library.user_id != current_user.id
+      raise ActiveRecord::RecordNotFound
+    end
+  end
+
+  def ensure_visible_library
+    # 💡 もし下書き（draft）状態、かつ本人のものでなければ閲覧不可にする設定例
+    # (Libraryモデルに status カラムがあり、下書きが "draft" の場合)
+    if @library.respond_to?(:status) && @library.status == "draft" && @library.user_id != current_user&.id
+      raise ActiveRecord::RecordNotFound
+    end
+  end
 
   def library_params
-    params.require(:library).permit(:title, :synopsis)
+    params.require(:library).permit(:title, :synopsis, :tag, :genre, :status)
   end
 end

@@ -1,13 +1,51 @@
-<%= render "user-tag", user: @user %>
+<%= render "users/user-tag", user: @user %>
+<!-- users/index -->
 
- <% @users.each do |user| %>
-    <tr>
-      <td><%= user.id %></td>
-      <td><%= user.email %></td>
-     
-     
-    </tr>
-  <% end %>
+<div class="ranking-section" style="margin-top: 40px; padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
+  <h2>🏆 本棚（ライブラリ）合計閲覧数ランキング</h2>
   
- 
+  <ol class="ranking-list" style="padding-left: 20px;">
+    <% 
+      # 同着順位を計算するための変数を初期化
+      current_rank = 1
+      last_pv = nil
+    %>
+    <% @library_ranking.each_with_index do |library, index| %>
+      <%
+        # 1つ前の本棚と合計PV数を比較し、異なれば現在のインデックスをベースに順位を更新
+        if last_pv && library.total_views_count < last_pv
+          current_rank = index + 1
+        end
+        last_pv = library.total_views_count
+      %>
+      
+      <li class="ranking-item" style="margin-bottom: 15px; list-style-type: none;">
+        <!-- 順位のバッジ表現 -->
+        <% if current_rank == 1 %>
+          <span style="font-weight: bold; color: #d4af37;">🥇 1位</span>
+        <% elsif current_rank == 2 %>
+          <span style="font-weight: bold; color: #c0c0c0;">🥈 2位</span>
+         <% elsif current_rank == 3 %>
+          <span style="font-weight: bold; color: #cd7f32;">🥉 3位</span>
+        <% else %>
+          <span style="color: #555;">第 <%= current_rank %> 位</span>
+        <% end %>
 
+        <!-- 親データのタイトル（詳細ページ /libraries/:id へのリンク） -->
+        <span style="margin-left: 10px; font-size: 1.1em; font-weight: bold;">
+          <%= link_to library.title, library_novels_path(library) %>
+        </span>
+
+        <!-- 作者名（User）の表示（もし必要であれば） -->
+        <span style="font-size: 0.9em; color: #666; margin-left: 10px;">
+          (作者: <%= library.user.name %>)
+        </span>
+
+        <!-- 本棚の合計閲覧数 -->
+        <span style="margin-left: 15px; font-weight: bold; color: #007bff;">
+          <%= library.total_views_count %> PV 
+        </span>
+      </li>
+    <% end %>
+  </ol>
+</div>
