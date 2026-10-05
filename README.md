@@ -4,11 +4,10 @@
 各話ごとに高評価機能がありランキングで競い合うなど、モチベーション機能もあります。
 レスポンシブ機能もあり媒体ごとに使いやすいように意識しました。
 
-・Ruby 4.0.6
-
-・Ruby on Rails 7.2.2.1
-* Ruby version
-
+* Ruby 4.0.6
+* 
+* Ruby on Rails 7.2.2.1
+* 
 * System dependencies
 
 * Configuration
