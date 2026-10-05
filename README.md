@@ -5,21 +5,17 @@
 レスポンシブ機能もあり媒体ごとに使いやすいように意識しました。
 
 * Ruby 4.0.6
-* 
+  
 * Ruby on Rails 7.2.2.1
-* 
-* System dependencies
+  
+# 機能一覧
+* ユーザー登録、ログイン機能（デバイス）
+* 投稿機能
+  　・小説
+*高評価、PV機能
+　・ランキング
+*ページ管理機能（カミナリ）
+*検索、絞り込み機能
+*閲覧履歴（Session）
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+ 
