@@ -4,11 +4,9 @@
 各話ごとに高評価機能がありランキングで競い合うなど、モチベーション機能もあります。
 レスポンシブ機能もあり媒体ごとに使いやすいように意識しました。
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+・Ruby 4.0.6
 
-Things you may want to cover:
-
+・Ruby on Rails 7.2.2.1
 * Ruby version
 
 * System dependencies
