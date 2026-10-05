@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_03_090806) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_05_120000) do
   create_table "libraries", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "title", null: false
@@ -32,6 +32,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_03_090806) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["novel_id"], name: "index_likes_on_novel_id"
+    t.index ["user_id", "novel_id"], name: "index_likes_on_user_id_and_novel_id", unique: true
     t.index ["user_id"], name: "index_likes_on_user_id"
   end
 

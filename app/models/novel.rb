@@ -1,16 +1,31 @@
 class Novel < ApplicationRecord
-belongs_to :user
-belongs_to :library
-has_many :likes
-has_many :novel_views, dependent: :destroy
-before_validation :assign_page_number, on: :create
-after_destroy :renumber_subsequent_pages
-after_save :update_library_total_counts, if: :saved_change_to_view_counts_count?
+  belongs_to :user
+  belongs_to :library
+  has_many :likes, dependent: :destroy
+  has_many :novel_views, dependent: :destroy
+
+  # Enumの設定
+  enum :status, { draft: 0, published: 1, archived: 2 }
+
+  validates :subtitle, presence: true, length: { maximum: 255 }
+  validates :story, presence: true
+  validates :status, presence: true
+  validates :page_number, uniqueness: { scope: :library_id }, allow_blank: true
+
+  before_validation :assign_page_number, on: :create
+  after_destroy :renumber_subsequent_pages
+  # 閲覧数のカウンターキャッシュはコールバックを通らないため、after_save では更新できない
+  # (閲覧数の集計は NovelView 側で行う)。小説の削除で減る分だけをここで再計算する
+  after_destroy_commit :update_library_total_counts
+
   def to_param
     page_number.to_s
   end
 
   def update_library_total_counts
+    # ライブラリごと削除された場合は更新先がないので何もしない
+    return unless library&.persisted?
+
     library.update_total_counts
   end
 
@@ -18,38 +33,34 @@ after_save :update_library_total_counts, if: :saved_change_to_view_counts_count?
     library.novels.find_by(page_number: page_number - 1)
   end
 
-  # max_page から page_number に修正
   def next
     library.novels.find_by(page_number: page_number + 1)
   end
 
-  validates :subtitle, presence: true, length: { maximum: 255 }
-  validates :story, presence: true
-  validates :status, presence: true
-  validates :page_number, uniqueness: { scope: :library_id }, allow_blank: true
-  # Enumの設定
-  enum :status, { draft: 0, published: 1, archived: 2 }
-
   def liked_by?(user)
-    return false unless user # 💡 念のためユーザーが nil（ログアウト時）の対策も入れておくと安全です
+    return false unless user # ログアウト時(nil)の対策
     likes.exists?(user_id: user.id)
   end
+
   private
 
   def renumber_subsequent_pages
-    # 同じ本（library）に紐づく、削除されたページ（自分自身）より後ろのページを取得
-    # 例：3ページ目が消されたら、4ページ目以降が対象
-    subsequent_pages = library.novels.where("page_number > ?", page_number)
+    # ライブラリごと削除される場合は、詰め直しは不要
+    return if destroyed_by_association&.active_record == Library
+    return if library.nil?
 
-    # 該当するページの page_number をすべて -1 する
-    # update_all を使うことで、1回のSQLで高速に一括更新できます
-    subsequent_pages.update_all("page_number = page_number - 1")
+    # 小さいページ番号から順に1つずつ詰める。
+    # 一括 UPDATE (page_number = page_number - 1) だと、行の処理順によって
+    # ユニーク制約 [library_id, page_number] に一時的に衝突する恐れがあるため
+    library.novels.where("page_number > ?", page_number).order(:page_number).each do |novel|
+      novel.update_columns(page_number: novel.page_number - 1)
+    end
   end
 
   def assign_page_number
     return if library_id.blank?
 
-    # .to_i を使うことで、nil の場合は 0 になり、+1 されて 1 になります（ロジックの共通化）
+    # maximum が nil の場合は .to_i で 0 になり、+1 されて 1 になる
     max_page = Novel.where(library_id: library_id).maximum(:page_number).to_i
     self.page_number = max_page + 1
   end

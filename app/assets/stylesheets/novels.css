@@ -1,7 +1,7 @@
 /* novels/_create_novels */
 .novel-form {
   max-width: 100%; /* 横幅の制限を解除 */
-  margin: 0;
+   margin: 60px 0 0 0;
   padding: 2rem;
   box-sizing: border-box;
 }
@@ -155,4 +155,43 @@
 
 .error-container li {
   margin-bottom: 0.25rem;
+}
+
+
+@media screen and (max-width: 768px) {
+  /* フォーム全体の上部に余白を作り、開始位置を下に下げます */
+  .novel-form {
+    margin-top: 25px; 
+    padding: 1.5rem; /* スマホ用に左右の余白を少しタイトに */
+  }
+
+  /* エラーメッセージが発生した場合も、上部にしっかり余白を確保します */
+  .error-container {
+    margin: 40px 1.5rem 2rem 1.5rem;
+  }
+
+  /* 執筆集中エリア（ストーリー）の調整 */
+  .novel-form .form-group-story {
+    margin-left: -1.5rem;  /* スマホのpadding（1.5rem）に合わせて打ち消し */
+    margin-right: -1.5rem;
+    margin-top: 30px;      /* サブタイトルの入力欄から少し位置を下げて間隔をあける */
+  }
+
+  /* ストーリーのラベルの左余白をスマホ用に調整 */
+  .novel-form .form-group-story label {
+    padding-left: 1.5rem;
+  }
+
+  /* ストーリー入力欄：スマホのキーボード表示を考慮し、高さと上余白を最適化 */
+  .novel-form .form-group-story textarea {
+    min-height: 50vh;     /* キーボードが出ても隠れにくいよう、少し高さを抑える */
+    padding: 3rem 1.5rem 1.5rem 1.5rem; /* 上の余白（3rem）で書き始めの位置を下げます */
+    font-size: 1rem;       /* スマホで読みやすい標準的なサイズに微調整 */
+  }
+
+  /* 保存ボタンのタップ領域を広げて押しやすく */
+  .form-actions input[type="submit"] {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+  }
 }
