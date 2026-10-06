@@ -13,13 +13,13 @@ WORKDIR /rails
 
 # 実行時に必要なパッケージ
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libjemalloc2 libvips sqlite3 && \
+    apt-get install --no-install-recommends -y curl libjemalloc2 libvips libpq5 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="development"
+    BUNDLE_WITHOUT="development:test"
 
 
 # ---- ビルド用ステージ(最終イメージには含まれない) ----
@@ -27,7 +27,7 @@ FROM base AS build
 
 # gemのビルドとアセットのビルドに必要なパッケージ
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libyaml-dev pkg-config nodejs npm && \
+    apt-get install --no-install-recommends -y build-essential git libyaml-dev libpq-dev pkg-config nodejs npm && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
     npm install -g yarn
 
