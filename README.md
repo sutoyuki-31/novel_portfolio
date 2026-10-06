@@ -1,24 +1,44 @@
-# README
+# 小説投稿サイト
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+ログインユーザーは小説を作成、投稿を行い作品を共有しあう場です。
+各話ごとに高評価機能がありランキングで競い合うなど、モチベーション機能もあります。
+レスポンシブ機能もあり媒体ごとに使いやすいように意識しました。
 
-Things you may want to cover:
+* Ruby 4.0.6
+  
+* Ruby on Rails 7.2.2.1
+# サンプル画像
+*ホーム、ランキング
+<img width="1536" height="850" alt="スクリーンショット 2026-10-05 114359" src="https://github.com/user-attachments/assets/d27134a3-2820-42e7-ac51-604cde94a8f7" />
 
-* Ruby version
+*作品リスト、検索
+<img width="1536" height="851" alt="スクリーンショット 2026-10-05 120500" src="https://github.com/user-attachments/assets/a1b2ae33-9584-4c27-bb21-e75e83953035" />
 
-* System dependencies
 
-* Configuration
+  
+# 機能一覧
+* ユーザー登録、ログイン機能（デバイス）
+* 投稿機能
+  　・小説
+  
+*高評価、PV機能
+　・ランキング
+ 
+*ページ管理機能（カミナリ）
 
-* Database creation
+*検索、絞り込み機能
 
-* Database initialization
+*閲覧履歴（Session）
 
-* How to run the test suite
+# 作った経理
+ポートフォリオを作るのにあたって私が今まで一番利用してきたサイトは何かと考えた時、最初に浮かんだのが小説投稿サイトでした。
 
-* Services (job queues, cache servers, search engines, etc.)
+# 工夫したところ
+このサイトを利用者に対してURLがシンプルで流れが見やすいことを意識しました。どのサイトでも利用する上で見かけるURLですが、流れが見やすいことでどのページのURLなのかがわかりやすく、親しみがあるなと思い採用しました。
 
-* Deployment instructions
+ # ER図
+<img width="843" height="862" alt="image" src="https://github.com/user-attachments/assets/1917dd6d-7441-4bc8-b16f-f79ffe1d028e" />
 
-* ...
+
+
+ 
