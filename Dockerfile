@@ -27,9 +27,8 @@ FROM base AS build
 
 # gemのビルドとアセットのビルドに必要なパッケージ
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libyaml-dev libpq-dev pkg-config nodejs npm && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
-    npm install -g yarn
+    apt-get install --no-install-recommends -y build-essential git libyaml-dev libpq-dev pkg-config && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # gem(Gemfileが変わらない限りキャッシュが効く)
 COPY Gemfile Gemfile.lock ./
@@ -38,8 +37,6 @@ RUN bundle install && \
     bundle exec bootsnap precompile --gemfile
 
 # JSパッケージ(importmapを使っている場合は、この2行とyarn関連をすべて削除)
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
 
 # アプリ本体
 COPY . .
