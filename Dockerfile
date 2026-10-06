@@ -1,76 +1,76 @@
 # syntax = docker/dockerfile:1
 
-# This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
+# 本番用Dockerfile。ビルドと実行の例:
 # docker build -t my-app .
-# docker run -d -p 80:80 -p 443:443 --name my-app -e RAILS_MASTER_KEY=<value from config/master.key> my-app
+# docker run -d -p 3000:3000 -v rails_storage:/rails/storage \
+#   -e RAILS_MASTER_KEY=<config/master.key の値> --name my-app my-app
 
-# Make sure RUBY_VERSION matches the Ruby version in .ruby-version
+# .ruby-version と必ず一致させること
 ARG RUBY_VERSION=4.0.6
 FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
 
-# Rails app lives here
 WORKDIR /rails
 
-# Install base packages
+# 実行時に必要なパッケージ
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y curl libjemalloc2 libvips sqlite3 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Set production environment
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_WITHOUT="development"
 
-# Throw-away build stage to reduce size of final image
+
+# ---- ビルド用ステージ(最終イメージには含まれない) ----
 FROM base AS build
 
-# Install packages needed to build gems
+# gemのビルドとアセットのビルドに必要なパッケージ
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential git libyaml-dev pkg-config nodejs npm && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
+    npm install -g yarn
 
-RUN npm install -g yarn    
-
-# Install application gems
+# gem(Gemfileが変わらない限りキャッシュが効く)
 COPY Gemfile Gemfile.lock ./
 RUN bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile --gemfile
 
-# Copy application code
+# JSパッケージ(importmapを使っている場合は、この2行とyarn関連をすべて削除)
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
+
+# アプリ本体
 COPY . .
 
-# Precompile bootsnap code for faster boot times
-RUN bundle exec bootsnap precompile app/ lib/
-
-# Adjust binfiles to be executable on Linux
-RUN chmod +x bin/* && \
+# bootsnapのプリコンパイルと、binファイルの実行権限・改行コード修正
+RUN bundle exec bootsnap precompile app/ lib/ && \
+    chmod +x bin/* && \
     sed -i "s/\r$//g" bin/* && \
     sed -i 's/ruby\.exe$/ruby/' bin/*
 
-# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
+# RAILS_MASTER_KEY なしでアセットをプリコンパイル
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 
-
-
-# Final stage for app image
+# ---- 最終ステージ ----
 FROM base
 
-# Copy built artifacts: gems, application
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --from=build /rails /rails
 
-# Run and own only the runtime files as a non-root user for security
+# 非rootユーザーで実行(書き込みが必要なディレクトリだけ所有権を付与)
 RUN groupadd --system --gid 1000 rails && \
     useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
+    mkdir -p db log storage tmp && \
     chown -R rails:rails db log storage tmp
 USER 1000:1000
 
-# Entrypoint prepares the database.
+# SQLiteや添付ファイルを永続化したい場合は storage をボリュームにする
+VOLUME /rails/storage
+
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
-# Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-CMD ["./bin/rails", "server"]
+CMD ["./bin/rails", "server", "-b", "0.0.0.0"]
