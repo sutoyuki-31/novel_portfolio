@@ -7,6 +7,8 @@
 * Ruby 4.0.6
   
 * Ruby on Rails 7.2.2.1
+  
+* SQLite
 # 
 *ホーム、ランキング
 <img width="1536" height="850" alt="スクリーンショット 2026-10-05 114359" src="https://github.com/user-attachments/assets/d27134a3-2820-42e7-ac51-604cde94a8f7" />
@@ -25,7 +27,7 @@
 * ログイン後のページで作成を押すとこのページに移動します。
 * ここで小説のタイトルや作品情報を記入します。公開非公開もここで決定します。
 * <img width="1536" height="841" alt="スクリーンショット 2026-10-05 115249" src="https://github.com/user-attachments/assets/b0e27d68-cb32-4338-893e-0e152b6dc0f0" />
-*登録を押すとこのページに移動します。ここでは
+*登録を押すとこのページに移動します。ここでは小説のストーリーを作成します。
 <img width="1536" height="855" alt="スクリーンショット 2026-10-05 120057" src="https://github.com/user-attachments/assets/5782b861-ee04-4b76-b519-4a57246942cb" />
 
   　
@@ -36,7 +38,7 @@
 
 
 *検索、絞り込み機能
-*ここでは作品の一覧、
+*ここでは作品の一覧が表示されます。タイトル、キーワードの記入による検索やジャンルの絞り込みができます。
 <img width="1536" height="851" alt="スクリーンショット 2026-10-05 120500" src="https://github.com/user-attachments/assets/a1b2ae33-9584-4c27-bb21-e75e83953035" />
 
 
