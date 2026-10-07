@@ -2,7 +2,7 @@
 .novel-form {
   max-width: 100%; /* 横幅の制限を解除 */
    margin: 60px 0 0 0;
-  padding: 2rem;
+ padding: 1.5rem;
   box-sizing: border-box;
 }
 
@@ -20,20 +20,24 @@
   font-size: 0.85rem;
 }
 
+.select-wrapper {
+  position: relative;
+  width: 100%;
+}
 /* 入力フィールド共通（下線のみの超シンプル設計） */
 .form-group input[type="text"],
 .form-group select {
   width: 100%;
-  padding: 0.5rem 0;
+  padding: 0.5rem 1.5rem 0.5rem 0; /* 右側に少し余白を作る */
   font-size: 0.95rem;
   color: #333333;
-  background-color: transparent; /* 背景色はなし */
+  background-color: transparent;
   border: none;
-  border-bottom: 1px solid #dddddd; /* 目立たない薄い下線のみ */
+  border-bottom: 1px solid #dddddd;
   border-radius: 0;
   box-sizing: border-box;
   outline: none;
-  -webkit-appearance: none; /* ブラウザ固有の装飾をリセット */
+  -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
 }
@@ -85,6 +89,12 @@
   font-size: 0.8rem;
 }
 
+ .novel-form .form-group-story {
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
+    margin-top: 30px;
+  }
+
 /* ストーリーのテキストエリア（枠線・背景を完全排除し、一般的な設定を上書き） */
 .novel-form .form-group-story textarea {
   width: 100%;
@@ -126,12 +136,26 @@
   color: #000000;
 }
 
+.select-wrapper::after {
+  content: "";
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 5px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='8' height='5' viewBox='0 0 8 5'><path d='M1 1l3 3 3-3' stroke='%23777777' stroke-width='1' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat: no-repeat;
+  background-size: contain;
+  pointer-events: none; /* 矢印部分をクリックしてもセレクトボックスが反応するようにする */
+}
+
 /* ==========================================
    エラーメッセージ（警告色を排除したミニマル表現）
    ========================================== */
 .error-container {
   max-width: 600px;
-  margin: 2rem auto;
+   margin: 120px 1.5rem 2rem 1.5rem; 
   padding: 0 0 1rem 0;
   border-bottom: 1px dashed #cccccc; /* 赤ではなく、グレーの破線 */
 }

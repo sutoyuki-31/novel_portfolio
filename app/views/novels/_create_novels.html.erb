@@ -18,14 +18,18 @@
     <%= form.text_field :subtitle %>
   </div>
 
-  <div class="form-group">
+  <%# CSSの指示通り、クラスに「form-group-story」を追加しました %>
+  <div class="form-group form-group-story">
     <%= form.label :story, "ストーリー" %>
-    <%= form.text_area :story, rows: 5 %>
+    <%= form.text_area :story, placeholder: "ここに物語を綴ります..." %>
   </div>
 
   <div class="form-group">
     <%= form.label :status, "公開ステータス" %>
-    <%= form.select :status, Novel.statuses.keys.map { |k| [t("enums.novel.status.#{k}", default: k.humanize), k] } %>
+    <%# 矢印アイコンをCSSで表現するため、セレクトボックスの親に wrapper を配置するのがおすすめです %>
+    <div class="select-wrapper">
+      <%= form.select :status, Novel.statuses.keys.map { |k| [t("enums.novel.status.#{k}", default: k.humanize), k] } %>
+    </div>
   </div>
 
   <div class="form-actions">

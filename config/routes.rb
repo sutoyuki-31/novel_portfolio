@@ -10,6 +10,10 @@ Rails.application.routes.draw do
 
 devise_for :users
 
+devise_scope :user do
+  post "users/guest_sign_in", to: "users/guest_sessions#create"
+end
+
 resources :libraries do
     collection do
       get "history" # 閲覧履歴のデータ取得用URL (/libraries/history)
