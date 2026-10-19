@@ -29,6 +29,7 @@ test:
 # ensure the database is located in a persisted volume.
 production:
   adapter: postgresql
+  encoding: unicode
   url: <%= ENV["DATABASE_URL"] %>
   pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
   # database: path/to/persistent/storage/production.sqlite3
