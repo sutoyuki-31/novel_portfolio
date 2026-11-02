@@ -22,6 +22,8 @@ resources :libraries do
    resources :novels do
     resource :likes, only: [ :create, :destroy ]
   end
+  resources :comments do
+  end
 end
 
  resources :users, only: [ :index, :show, :create, :new, :edit, :update, :destroy ] do

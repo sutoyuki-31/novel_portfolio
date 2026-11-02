@@ -1,6 +1,10 @@
 // app/javascript/controllers/browse_history_recorder_controller.js
 import { Controller } from "@hotwired/stimulus"
 
+// localStorage のキーと最大保存件数(レンダラー側と必ず同じキーにすること)
+const STORAGE_KEY = "library_history"
+const MAX_HISTORY_COUNT = 20
+
 export default class extends Controller {
   static values = {
     libraryId: Number,
@@ -8,50 +12,57 @@ export default class extends Controller {
     novelSubtitle: String
   }
 
-  // 💡 connect() での直接実行を廃止し、値の変更をトリガーにします
-  connect() {
-    // ページが初回読み込みされたとき、またはTurboでコンテンツが差し替わったときに実行
-    this.recordHistory()
-  }
-
-  // 🆕 novelIdValue が変化した（別の話に切り替わった）ときにも自動実行
+  // 【修正1】connect() を削除しました。
+  // Stimulus は Value の初期化時にも ○○ValueDidChange を呼ぶため、
+  // connect() と併用すると初回表示で recordHistory() が2回走っていました。
+  // Turbo で要素が差し替わる場合は要素ごと再接続され、初期化時に呼ばれるので
+  // これだけで「初回表示」と「別の話への切り替え」の両方をカバーできます。
+  // ※もし初回に記録されない場合は、ここに connect() { this.recordHistory() } を戻し、
+  //   novelIdValueDidChange の方を削除してください(両方残すのは二重実行になります)。
   novelIdValueDidChange() {
     this.recordHistory()
   }
 
   recordHistory() {
-    // 1. 各Valueが正しく取得できているか確認（0やundefined、null、NaNを安全にスキップ）
+    // Value が未設定(0 / NaN)の場合は何もしない
     if (!this.libraryIdValue || !this.novelIdValue) return
 
-    // 2. LocalStorageから現在の履歴（配列）を取得
-    const history = JSON.parse(localStorage.getItem("library_history")) || []
-
-    // 3. 組み立てる新規しおりデータ
-    const newHistoryItem = {
+    const newItem = {
       libraryId: this.libraryIdValue,
       lastNovelId: this.novelIdValue,
       lastNovelSubtitle: this.novelSubtitleValue || "無題"
     }
 
-    // 4. 重複チェック：すでに同じ「作品(libraryId)」の履歴があるか探す
-    const existingIndex = history.findIndex(item => Number(item.libraryId) === Number(this.libraryIdValue))
+    // 同じ作品(libraryId)の古い履歴を除外し、最新を先頭に追加する
+    let history = this.readHistory()
+    history = history.filter(item => Number(item.libraryId) !== this.libraryIdValue)
+    history.unshift(newItem)
 
-    if (existingIndex !== -1) {
-      // 既存の履歴がある場合：一旦配列から削除（最新の閲覧順として先頭にするため）
-      history.splice(existingIndex, 1)
+    // 【修正2】pop() ではなく slice() で上限に切り詰める
+    // (上限を下げた場合や、すでに上限超過のデータがあっても安全)
+    history = history.slice(0, MAX_HISTORY_COUNT)
+
+    this.writeHistory(history)
+  }
+
+  // 【修正3】localStorage の読み書きを try/catch で保護
+  // プライベートモード等で localStorage が使えない場合や、保存データが壊れていて
+  // JSON.parse が例外を投げる場合でも、ページ全体の動作を止めないようにする
+  readHistory() {
+    try {
+      const data = JSON.parse(localStorage.getItem(STORAGE_KEY))
+      // 配列以外(null や壊れた形式)は空配列として扱う
+      return Array.isArray(data) ? data : []
+    } catch (e) {
+      return []
     }
+  }
 
-    // 5. 配列の「先頭」に最新の閲覧履歴を追加
-    history.unshift(newHistoryItem)
-
-    // 6. 最大件数を制限（例：最大20件）
-    const MAX_HISTORY_COUNT = 20
-    if (history.length > MAX_HISTORY_COUNT) {
-      history.pop() // 一番古い履歴を削除
+  writeHistory(history) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(history))
+    } catch (e) {
+      // 容量超過・保存不可の環境では、履歴を諦めて何もしない
     }
-
-    // 7. LocalStorageに保存
-    localStorage.setItem("library_history", JSON.stringify(history))
-    console.log("🔖 しおりを記録しました:", newHistoryItem)
   }
 }

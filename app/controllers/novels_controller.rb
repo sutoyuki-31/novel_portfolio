@@ -9,6 +9,7 @@ class NovelsController < ApplicationController
      # @library = Library.find(params[:library_id])
      @novel = Novel.published
     @novels = @library.novels.page(params[:page]).per(100)
+     @comments = Comment.all
   end
 
   def show
@@ -100,8 +101,15 @@ class NovelsController < ApplicationController
   end
 
   def set_novel
-    # @library の中から、URLに含まれる params[:id] の小説を探す（他人の小説へのアクセス防止）
-    @novel = @library.novels.find_by!(page_number: params[:id])
+    # @library の中から探すことで、他人の小説へのアクセスを防ぐ
+    @novel = @library.novels.find_by(page_number: params[:id])
+    return if @novel
+
+    # しおりの話が削除されていた場合など、存在しない話数は一覧に戻す
+    # (edit/update/destroy でも使われるため、see_other を付けておく)
+    redirect_to library_novels_path(@library),
+                alert: "指定された話は見つかりませんでした。",
+                status: :see_other
   end
 
   def novel_params

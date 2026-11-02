@@ -106,8 +106,8 @@ class LibrariesController < ApplicationController
 
         render json: @libraries.as_json(
           only: [ :id, :title, :synopsis ],
-          methods: [ :first_novel_id ]
-        )
+          methods: [ :first_page_number ]   # first_novel_id から変更
+)
       end
     end
   end

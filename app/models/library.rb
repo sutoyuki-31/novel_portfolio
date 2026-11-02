@@ -41,14 +41,16 @@ class Library < ApplicationRecord
 
   # インスタンスメソッド
   # 「最初のページ」は作成日時ではなく page_number で決める
-  def first_novel_id
+  # 第一話の page_number を返す
+  # NovelsController#set_novel が page_number でURLを解決するため、
+  # 主キー(id)ではなく page_number を返す
+  def first_page_number
     if novels.loaded?
-      # コントローラー側で includes(:novels) されている場合は、
-      # メモリ上の配列から探す（追加のSQLは0回）
-      novels.min_by { |novel| novel.page_number.to_i }&.id
+      # includes(:novels) 済みならメモリ上の配列から探す(追加のSQLは0回)
+      novels.map(&:page_number).compact.min
     else
-      # 事前ロードされていない場合は、IDだけを取得する
-      novels.order(:page_number).pick(:id)
+      # 事前ロードされていない場合は、DB側で最小値だけを取得する
+      novels.minimum(:page_number)
     end
   end
 end
